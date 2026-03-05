@@ -2,6 +2,7 @@ import SwiftUI
 
 enum AppTab: String, CaseIterable, Identifiable {
     case routes = "Routes"
+    case community = "Community"
     case settings = "Settings"
     case analytics = "Analytics"
     
@@ -11,6 +12,8 @@ enum AppTab: String, CaseIterable, Identifiable {
         switch self {
         case .routes:
             return "map.fill" // Map or list icon
+        case .community:
+            return "globe.americas.fill"
         case .settings:
             return "gearshape.fill"
         case .analytics:
@@ -30,6 +33,14 @@ struct MainTabView: View {
                     Label(AppTab.routes.rawValue, systemImage: AppTab.routes.iconName)
                 }
                 .tag(AppTab.routes)
+                
+            NavigationView {
+                CustomRouteListView()
+            }
+            .tabItem {
+                Label(AppTab.community.rawValue, systemImage: AppTab.community.iconName)
+            }
+            .tag(AppTab.community)
                 
             if loginViewModel.currentUser?.role == "admin" || loginViewModel.currentUser?.role == "super_admin" {
                 NavigationView {

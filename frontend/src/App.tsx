@@ -17,6 +17,10 @@ import { AnalyticsDashboard } from './pages/admin/AnalyticsDashboard';
 import { BulkUploadRoutes } from './pages/admin/BulkUploadRoutes';
 import { TermsOfService } from './pages/TermsOfService';
 
+import { CustomRoutesList } from './pages/custom_routes/CustomRoutesList';
+import { CreateCustomRoute } from './pages/custom_routes/CreateCustomRoute';
+import { CustomRouteDetail } from './pages/custom_routes/CustomRouteDetail';
+
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, isLoading } = useAuth();
   if (isLoading) return <div style={{ display: 'flex', justifyContent: 'center', marginTop: '3rem' }}><span className="loader" style={{ borderColor: 'var(--text-secondary)', borderTopColor: 'var(--primary-color)' }}></span></div>;
@@ -57,6 +61,11 @@ export const App = () => {
             <Route path="/admin/colors" element={<AdminColors />} />
             <Route path="/admin/analytics" element={<AnalyticsDashboard />} />
             <Route path="/admin/bulk-upload" element={<BulkUploadRoutes />} />
+
+            {/* Custom Routes */}
+            <Route path="/community" element={<CustomRoutesList />} />
+            <Route path="/community/add" element={<CreateCustomRoute />} />
+            <Route path="/community/:id" element={<CustomRouteDetail />} />
           </Route>
         </Routes>
       </BrowserRouter>

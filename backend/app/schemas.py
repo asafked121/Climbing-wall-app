@@ -250,3 +250,54 @@ class Token(BaseModel):
 class LoginRequest(BaseModel):
     email: str
     password: str
+
+# --- Custom Route Schemas ---
+from typing import Any
+
+class CustomRouteCommentBase(BaseModel):
+    content: str
+
+class CustomRouteCommentCreate(CustomRouteCommentBase):
+    pass
+
+class CustomRouteCommentResponse(CustomRouteCommentBase):
+    id: int
+    user_id: int
+    custom_route_id: int
+    created_at: datetime
+    user: Optional[UserResponse] = None
+    model_config = ConfigDict(from_attributes=True)
+
+class CustomRouteVoteBase(BaseModel):
+    voted_grade: str
+
+class CustomRouteVoteCreate(CustomRouteVoteBase):
+    pass
+
+class CustomRouteVoteResponse(CustomRouteVoteBase):
+    id: int
+    user_id: int
+    custom_route_id: int
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+class CustomRouteBase(BaseModel):
+    name: str
+    intended_grade: str
+    photo_url: str
+    holds: str # JSON encoded str
+
+class CustomRouteCreate(CustomRouteBase):
+    pass
+
+class CustomRouteResponse(CustomRouteBase):
+    id: int
+    user_id: int
+    created_at: datetime
+    author: Optional[UserResponse] = None
+    model_config = ConfigDict(from_attributes=True)
+
+class CustomRouteDetailResponse(CustomRouteResponse):
+    custom_grade_votes: List[CustomRouteVoteResponse] = []
+    custom_comments: List[CustomRouteCommentResponse] = []
+    model_config = ConfigDict(from_attributes=True)

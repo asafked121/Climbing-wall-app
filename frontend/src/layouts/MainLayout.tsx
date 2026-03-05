@@ -18,6 +18,10 @@ export const MainLayout: React.FC = () => {
                         <span className="nav-icon">🏠</span>
                         <span className="nav-text">Home</span>
                     </NavLink>
+                    <NavLink to="/community" className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}>
+                        <span className="nav-icon">🌍</span>
+                        <span className="nav-text">Community</span>
+                    </NavLink>
                     {user && (user.role === 'admin' || user.role === 'setter' || user.role === 'super_admin') && (
                         <NavLink to="/add-route" className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}>
                             <span className="nav-icon">➕</span>
@@ -50,6 +54,10 @@ export const MainLayout: React.FC = () => {
                 <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                     <span className="nav-icon">🏠</span>
                     <span className="nav-text">Home</span>
+                </NavLink>
+                <NavLink to="/community" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                    <span className="nav-icon">🌍</span>
+                    <span className="nav-text">Community</span>
                 </NavLink>
                 {user && (user.role === 'admin' || user.role === 'setter') && (
                     <NavLink to="/add-route" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>

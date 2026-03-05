@@ -254,3 +254,59 @@ struct AnalyticsResponse: Codable {
         case topRatedRoutes = "top_rated_routes"
     }
 }
+
+// MARK: - Custom Routes
+
+struct CustomRoute: Codable, Identifiable {
+    let id: Int
+    let name: String
+    let intendedGrade: String
+    let photoUrl: String
+    let author: BasicUser?
+    
+    enum CodingKeys: String, CodingKey {
+        case id, name, author
+        case intendedGrade = "intended_grade"
+        case photoUrl = "photo_url"
+    }
+}
+
+struct BasicUser: Codable {
+    let username: String
+}
+
+struct CustomRouteDetailModel: Codable, Identifiable {
+    let id: Int
+    let name: String
+    let intendedGrade: String
+    let photoUrl: String
+    let holds: String
+    let author: BasicUser?
+    let customGradeVotes: [CustomGradeVote]
+    let customComments: [CustomComment]
+    
+    enum CodingKeys: String, CodingKey {
+        case id, name, holds, author
+        case intendedGrade = "intended_grade"
+        case photoUrl = "photo_url"
+        case customGradeVotes = "custom_grade_votes"
+        case customComments = "custom_comments"
+    }
+}
+
+struct CustomGradeVote: Codable, Identifiable {
+    let id: Int
+    let votedGrade: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case votedGrade = "voted_grade"
+    }
+}
+
+struct CustomComment: Codable, Identifiable {
+    let id: Int
+    let content: String
+    let user: BasicUser?
+}
+

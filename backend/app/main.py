@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.database import engine, Base
-from app.routers import auth, admin, climbing_routes, interactions, analytics
+from app.routers import auth, admin, climbing_routes, interactions, analytics, custom_routes
 
 import os
 
@@ -53,6 +53,7 @@ app.include_router(admin.router)
 app.include_router(climbing_routes.router)
 app.include_router(interactions.router)
 app.include_router(analytics.router)
+app.include_router(custom_routes.router)
 
 os.makedirs("data/photos", exist_ok=True)
 app.mount("/photos", StaticFiles(directory="data/photos"), name="photos")

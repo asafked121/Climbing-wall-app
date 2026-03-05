@@ -123,3 +123,47 @@ class Ascent(Base):
 
     user = relationship("User", back_populates="ascents")
     route = relationship("Route", back_populates="ascents")
+
+
+class CustomRoute(Base):
+    __tablename__ = "custom_routes"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    name = Column(String, nullable=False)
+    intended_grade = Column(String, nullable=False)
+    photo_url = Column(String, nullable=False)
+    holds = Column(String, nullable=False) # JSON encoded string of holds [{x, y, radius}]
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    author = relationship("User")
+    custom_grade_votes = relationship("CustomRouteVote", back_populates="custom_route", cascade="all, delete-orphan")
+    custom_comments = relationship("CustomRouteComment", back_populates="custom_route", cascade="all, delete-orphan")
+
+
+class CustomRouteVote(Base):
+    __tablename__ = "custom_route_votes"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    custom_route_id = Column(Integer, ForeignKey("custom_routes.id", ondelete="CASCADE"), nullable=False)
+    voted_grade = Column(String, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    user = relationship("User")
+    custom_route = relationship("CustomRoute", back_populates="custom_grade_votes")
+
+    __table_args__ = (UniqueConstraint('user_id', 'custom_route_id', name='_user_custom_route_uc'),)
+
+
+class CustomRouteComment(Base):
+    __tablename__ = "custom_route_comments"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    custom_route_id = Column(Integer, ForeignKey("custom_routes.id", ondelete="CASCADE"), nullable=False)
+    content = Column(String, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    user = relationship("User")
+    custom_route = relationship("CustomRoute", back_populates="custom_comments")
