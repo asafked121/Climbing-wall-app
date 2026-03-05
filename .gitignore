@@ -1,0 +1,114 @@
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Node modules
+node_modules/
+.npm/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Environments
+.env
+.env.*
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Databases
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+*.db3
+*.db-shm
+*.db-wal
+backend/climbing_wall.db
+backend/test_admin.db
+data/climbing_wall.db
+test_admin.db
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Vercel / Next.js
+.vercel/
+.next/
+out/
+
+# Frontend builds
+frontend/build/
+frontend/dist/
+
+# iOS / Xcode
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xccheckout
+*.moved-aside
+DerivedData/
+*.hmap
+*.ipa
+*.xcuserstate
+
+# We DO NOT ignore these essential Xcode files:
+# !*.pbxproj
+# !*.xcworkspacedata
+# but we DO ignore the workspace user states:
+ios/ClimbingWall/project.xcworkspace/xcuserdata/
+
+# Secrets / Auth
+cookies.txt
+
+# Media / Assets
+photos/

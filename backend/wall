@@ -1,0 +1,154 @@
+#!/usr/bin/env python3
+"""
+CLI management script for the Climbing Wall application.
+
+Run via SSH on the server to perform privileged operations
+that should not be exposed through the web API.
+
+Password protected — set MANAGE_CLI_PASSWORD in your .env or
+as an environment variable before running.
+
+Usage:
+    wall promote super-admin user@example.com
+    wall demote super-admin user@example.com
+"""
+
+import argparse
+import getpass
+import os
+import sys
+
+from app.database import SessionLocal
+from app import models
+
+
+def verify_password() -> None:
+    """Prompt for the CLI password and verify against the env variable."""
+    expected = os.environ.get("MANAGE_CLI_PASSWORD")
+    if not expected:
+        print("Error: MANAGE_CLI_PASSWORD environment variable is not set.")
+        print("Set it in your .env file or export it before running this script.")
+        sys.exit(1)
+
+    entered = getpass.getpass("Enter management password: ")
+    if entered != expected:
+        print("Error: Incorrect password.")
+        sys.exit(1)
+
+
+def promote_super_admin(email: str) -> None:
+    """Promote a user to super_admin by email."""
+    db = SessionLocal()
+    try:
+        user = db.query(models.User).filter(models.User.email == email).first()
+        if user is None:
+            print(f"Error: No user found with email '{email}'.")
+            sys.exit(1)
+
+        if user.role == "super_admin":
+            print(f"User '{user.username}' ({email}) is already a super_admin.")
+            return
+
+        old_role = user.role
+        user.role = "super_admin"
+        db.commit()
+        print(f"Success: '{user.username}' ({email}) promoted from '{old_role}' to 'super_admin'.")
+    finally:
+        db.close()
+
+
+def demote_super_admin(email: str) -> None:
+    """Demote a super_admin back to student by email."""
+    db = SessionLocal()
+    try:
+        user = db.query(models.User).filter(models.User.email == email).first()
+        if user is None:
+            print(f"Error: No user found with email '{email}'.")
+            sys.exit(1)
+
+        if user.role != "super_admin":
+            print(f"Error: User '{user.username}' ({email}) is not a super_admin (current role: '{user.role}').")
+            sys.exit(1)
+
+        user.role = "student"
+        db.commit()
+        print(f"Success: '{user.username}' ({email}) demoted from 'super_admin' to 'student'.")
+    finally:
+        db.close()
+
+
+def build_parser() -> argparse.ArgumentParser:
+    """Build the CLI argument parser."""
+    parser = argparse.ArgumentParser(
+        description="Climbing Wall App — Server Management CLI",
+    )
+    subparsers = parser.add_subparsers(dest="command", help="Management commands")
+
+    # --- promote ---
+    promote_parser = subparsers.add_parser("promote", help="Promote a user's role")
+    promote_sub = promote_parser.add_subparsers(dest="role_target")
+    promote_sa = promote_sub.add_parser("super-admin", help="Promote to super_admin")
+    promote_sa.add_argument("email", help="Email of the user to promote")
+
+    # --- demote ---
+    demote_parser = subparsers.add_parser("demote", help="Demote a user's role")
+    demote_sub = demote_parser.add_subparsers(dest="role_target")
+    demote_sa = demote_sub.add_parser("super-admin", help="Demote from super_admin to student")
+    demote_sa.add_argument("email", help="Email of the user to demote")
+
+    # --- help ---
+    subparsers.add_parser("help", help="Show help message")
+
+    return parser
+
+
+def print_help_message() -> None:
+    """Print a friendly help message with all available commands."""
+    print("""
+🧗 Climbing Wall App — Management CLI
+======================================
+
+Available commands:
+
+  promote super-admin <email>   Promote a user to super_admin
+  demote  super-admin <email>   Demote a super_admin back to student
+  help                          Show this help message
+
+Examples:
+
+  wall promote super-admin admin@example.com
+  wall demote super-admin admin@example.com
+
+Note: All commands (except help) require the MANAGE_CLI_PASSWORD
+      environment variable to be set and will prompt for the password.
+""")
+
+
+def main() -> None:
+    parser = build_parser()
+    args = parser.parse_args()
+
+    if args.command is None or args.command == "help":
+        print_help_message()
+        sys.exit(0)
+
+    # Password gate — must authenticate before any command runs
+    verify_password()
+
+    if args.command == "promote":
+        if args.role_target == "super-admin":
+            promote_super_admin(args.email)
+        else:
+            parser.parse_args(["promote", "--help"])
+    elif args.command == "demote":
+        if args.role_target == "super-admin":
+            demote_super_admin(args.email)
+        else:
+            parser.parse_args(["demote", "--help"])
+    else:
+        print_help_message()
+        sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
