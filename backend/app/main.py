@@ -54,8 +54,8 @@ app.include_router(climbing_routes.router)
 app.include_router(interactions.router)
 app.include_router(analytics.router)
 
-os.makedirs("photos", exist_ok=True)
-app.mount("/photos", StaticFiles(directory="photos"), name="photos")
+os.makedirs("data/photos", exist_ok=True)
+app.mount("/photos", StaticFiles(directory="data/photos"), name="photos")
 
 @app.get("/")
 def read_root():

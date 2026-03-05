@@ -1,9 +1,11 @@
 import SwiftUI
+import PhotosUI
 
 struct EditRouteView: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var loginViewModel: LoginViewModel
     @StateObject private var viewModel: EditRouteViewModel
+    @State private var selectedPhotoItem: PhotosPickerItem?
     
     var onRouteEdited: (() -> Void)?
     
@@ -70,6 +72,25 @@ struct EditRouteView: View {
                         Picker("Status", selection: $viewModel.selectedStatus) {
                             ForEach(viewModel.statuses, id: \.self) { status in
                                 Text(status.capitalized).tag(status)
+                            }
+                        }
+                        
+                        PhotosPicker(selection: $selectedPhotoItem, matching: .images, photoLibrary: .shared()) {
+                            HStack {
+                                Text("Update Photo")
+                                Spacer()
+                                if viewModel.selectedPhotoData != nil {
+                                    Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
+                                } else {
+                                    Text("Optional").foregroundColor(.secondary)
+                                }
+                            }
+                        }
+                        .onChange(of: selectedPhotoItem) { newValue in
+                            Task {
+                                if let data = try? await newValue?.loadTransferable(type: Data.self) {
+                                    viewModel.selectedPhotoData = data
+                                }
                             }
                         }
                     }

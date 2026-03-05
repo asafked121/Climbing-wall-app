@@ -21,6 +21,8 @@ class EditRouteViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var isSuccess: Bool = false
     
+    @Published var selectedPhotoData: Data?
+    
     let statuses = ["active", "archived"]
     
     /// Returns the correct grade list based on the selected zone's route type.
@@ -90,6 +92,11 @@ class EditRouteViewModel: ObservableObject {
                 status: selectedStatus.lowercased(),
                 setDate: selectedSetDate
             )
+            
+            if let photoData = selectedPhotoData {
+                _ = try await NetworkManager.shared.uploadRoutePhoto(routeId: routeId, imageData: photoData)
+            }
+            
             isSuccess = true
         } catch let error as APIError {
             errorMessage = error.localizedDescription

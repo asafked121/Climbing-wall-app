@@ -3,7 +3,10 @@
     padding: 1.5rem;
     box-shadow: var(--shadow-sm);
     transition: box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    overflow: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 .card:hover {

@@ -9,7 +9,7 @@ export interface CardProps {
 
 export const Card: React.FC<CardProps> = ({ children, className = '', noPadding = false }) => {
     return (
-        <div className={`card glass animate-fade-in ${noPadding ? 'card-no-padding' : ''} ${className}`}>
+        <div className={`card glass ${noPadding ? 'card-no-padding' : ''} ${className}`}>
             {children}
         </div>
     );

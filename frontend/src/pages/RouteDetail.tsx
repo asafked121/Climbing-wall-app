@@ -102,6 +102,7 @@ export const RouteDetail: React.FC = () => {
     const [editSetterId, setEditSetterId] = useState<number | ''>('');
     const [editSetDate, setEditSetDate] = useState('');
     const [editStatus, setEditStatus] = useState('');
+    const [editPhotoFile, setEditPhotoFile] = useState<File | null>(null);
     const [editGrades, setEditGrades] = useState<string[]>([]);
     const [editError, setEditError] = useState('');
 
@@ -182,6 +183,7 @@ export const RouteDetail: React.FC = () => {
         setEditSetterId(route.setter?.id ?? '');
         setEditSetDate(route.set_date ? route.set_date.split('T')[0] : '');
         setEditStatus(route.status);
+        setEditPhotoFile(null);
         setEditError('');
         setIsEditing(true);
     };
@@ -202,6 +204,11 @@ export const RouteDetail: React.FC = () => {
 
             if (Object.keys(updatePayload).length > 0) {
                 await api.patch(`/admin/routes/${route.id}`, updatePayload);
+            }
+            if (editPhotoFile) {
+                const formData = new FormData();
+                formData.append('file', editPhotoFile);
+                await api.postFormData(`/routes/${route.id}/photo`, formData);
             }
             setIsEditing(false);
             await fetchRouteDetail(false);
@@ -402,6 +409,16 @@ export const RouteDetail: React.FC = () => {
                                     <option value="active">Active</option>
                                     <option value="archived">Archived</option>
                                 </select>
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">Update Photo (Optional)</label>
+                                <input
+                                    type="file"
+                                    className="input-field"
+                                    accept="image/*"
+                                    onChange={e => setEditPhotoFile(e.target.files?.[0] || null)}
+                                    style={{ padding: '0.4rem' }}
+                                />
                             </div>
                         </div>
                         <div className="edit-form-actions">

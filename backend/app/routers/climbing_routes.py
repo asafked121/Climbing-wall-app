@@ -94,7 +94,8 @@ async def upload_route_photo(
     route_type = zone.route_type if zone else "unknown"
     grade = db_route.intended_grade.replace(".", "_") # sanitize path
     
-    directory = f"photos/{route_type}/{grade}"
+    sub_path = f"{route_type}/{grade}"
+    directory = f"data/photos/{sub_path}"
     os.makedirs(directory, exist_ok=True)
     
     file_extension = file.filename.split(".")[-1] if "." in file.filename else "jpg"
@@ -105,7 +106,7 @@ async def upload_route_photo(
         content = await file.read()
         f.write(content)
         
-    db_route.photo_url = f"/{file_path}"
+    db_route.photo_url = f"/photos/{sub_path}/{filename}"
     db.commit()
     db.refresh(db_route)
     

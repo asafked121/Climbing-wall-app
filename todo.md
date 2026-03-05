@@ -1,5 +1,5 @@
 add photo after the fact to routes
-uploading beta videos
+uploading beta videos (expensive memory wise)
 people can post custom routes
 - a pic of wall with marked holds
 - ai auto-detect holds that people can pick on photo
