@@ -30,6 +30,7 @@ export const AdminUsers: React.FC = () => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line
     fetchUsers();
   }, []);
 
@@ -37,8 +38,9 @@ export const AdminUsers: React.FC = () => {
     try {
       await api.patch(`/admin/users/${userId}/role`, { role });
       fetchUsers();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const e = err as Error;
+      setError(e.message);
     }
   };
 
@@ -46,8 +48,9 @@ export const AdminUsers: React.FC = () => {
     try {
       await api.patch(`/admin/users/${userId}/ban`, { is_banned: !isBanned });
       fetchUsers();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const e = err as Error;
+      setError(e.message);
     }
   };
 
@@ -56,8 +59,9 @@ export const AdminUsers: React.FC = () => {
     try {
       await api.delete(`/admin/users/${userId}`);
       fetchUsers();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const e = err as Error;
+      setError(e.message);
     }
   };
 

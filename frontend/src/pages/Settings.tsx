@@ -15,12 +15,12 @@ export const Settings: React.FC = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const [ascents, setAscents] = useState<any[]>([]);
+  const [ascents, setAscents] = useState<{ascent_type: string}[]>([]);
 
   useEffect(() => {
     if (user && user.id > 0) {
       api
-        .get<any[]>(`/routes/user/${user.id}/ascents`)
+        .get<{ascent_type: string}[]>(`/routes/user/${user.id}/ascents`)
         .then((data) => setAscents(data))
         .catch((err) => console.error("Failed to load ascents", err));
     }
@@ -44,8 +44,9 @@ export const Settings: React.FC = () => {
       // Refresh the user context so the new username propagates across the app
       if (fetchUser) await fetchUser();
       setIsEditing(false);
-    } catch (err: any) {
-      setError(err.message || "Failed to update username");
+    } catch (err) {
+      const e = err as Error;
+      setError(e.message || "Failed to update username");
     } finally {
       setIsLoading(false);
     }

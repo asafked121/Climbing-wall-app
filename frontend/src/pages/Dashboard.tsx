@@ -35,12 +35,12 @@ export const Dashboard: React.FC = () => {
   const [filterType, setFilterType] = useState<string>("boulder");
   const [statusFilter, setStatusFilter] = useState<string>("active");
   const [zoneFilter, setZoneFilter] = useState<string>("");
-  const [zones, setZones] = useState<any[]>([]);
+  const [zones, setZones] = useState<{id: number, route_type: string, name: string}[]>([]);
 
   useEffect(() => {
     const fetchFilters = async () => {
       try {
-        const zonesData = await api.get<any[]>("/routes/zones");
+        const zonesData = await api.get<{id: number, route_type: string, name: string}[]>("/routes/zones");
         setZones(zonesData);
       } catch (err) {
         console.error("Failed to load zones", err);
@@ -56,7 +56,7 @@ export const Dashboard: React.FC = () => {
       );
       if (!isValid) setZoneFilter("");
     }
-  }, [filterType, zones]);
+  }, [filterType, zones, zoneFilter]);
 
   useEffect(() => {
     const fetchRoutes = async () => {
@@ -78,7 +78,7 @@ export const Dashboard: React.FC = () => {
       }
     };
     fetchRoutes();
-  }, [filterType, zoneFilter, statusFilter]);
+  }, [filterType, zoneFilter, statusFilter, canManageRoutes]);
 
   return (
     <div className="dashboard">

@@ -90,7 +90,7 @@ export const AddRoute: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const newRoute = await api.post<any>("/admin/routes", {
+      const newRoute = await api.post<{ id: number }>("/admin/routes", {
         zone_id: zoneId,
         setter_id: setterId,
         color,
@@ -105,8 +105,9 @@ export const AddRoute: React.FC = () => {
       }
 
       navigate("/");
-    } catch (err: any) {
-      setError(err.message || "Failed to add route.");
+    } catch (err) {
+      const e = err as { message?: string };
+      setError(e.message || "Failed to add route.");
     } finally {
       setIsLoading(false);
     }

@@ -61,8 +61,9 @@ export const BulkUploadRoutes: React.FC = () => {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-    } catch (err: any) {
-      setGlobalError(err.message || "Failed to download template");
+    } catch (err) {
+      const e = err as Error;
+      setGlobalError(e.message || "Failed to download template");
     }
   };
 
@@ -90,12 +91,16 @@ export const BulkUploadRoutes: React.FC = () => {
         formData,
       );
       setUploadResult(result);
-    } catch (err: any) {
-      if (err.data && err.data.errors) {
+    } catch (err) {
+      const errorObj = err as {
+        message?: string;
+        data?: UploadResponse;
+      };
+      if (errorObj.data && errorObj.data.errors) {
         // If the API returns 400 with our structured error response
-        setUploadResult(err.data);
+        setUploadResult(errorObj.data);
       } else {
-        setGlobalError(err.message || "An error occurred during upload");
+        setGlobalError(errorObj.message || "An error occurred during upload");
       }
     } finally {
       setIsUploading(false);

@@ -7,14 +7,14 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
 interface RequestOptions extends RequestInit {
-  data?: any;
+  data?: unknown;
 }
 
 class ApiError extends Error {
   status: number;
-  data: any;
+  data: unknown;
 
-  constructor(status: number, data: any, message: string) {
+  constructor(status: number, data: unknown, message: string) {
     super(message);
     this.status = status;
     this.data = data;
@@ -87,15 +87,15 @@ export const api = {
     return this.request<T>(endpoint, { ...options, method: "GET" });
   },
 
-  post<T>(endpoint: string, data?: any, options?: RequestOptions) {
+  post<T>(endpoint: string, data?: unknown, options?: RequestOptions) {
     return this.request<T>(endpoint, { ...options, method: "POST", data });
   },
 
-  put<T>(endpoint: string, data?: any, options?: RequestOptions) {
+  put<T>(endpoint: string, data?: unknown, options?: RequestOptions) {
     return this.request<T>(endpoint, { ...options, method: "PUT", data });
   },
 
-  patch<T>(endpoint: string, data?: any, options?: RequestOptions) {
+  patch<T>(endpoint: string, data?: unknown, options?: RequestOptions) {
     return this.request<T>(endpoint, { ...options, method: "PATCH", data });
   },
 

@@ -14,7 +14,7 @@ describe("api utility", () => {
   it("GET request_NormalCase_returnsDataSuccessfully", async () => {
     // Arrange
     const mockData = { id: 1, name: "Test" };
-    (global.fetch as any).mockResolvedValueOnce({
+    (global.fetch as import("vitest").Mock).mockResolvedValueOnce({
       ok: true,
       headers: new Headers({ "content-type": "application/json" }),
       json: async () => mockData,
@@ -39,7 +39,7 @@ describe("api utility", () => {
     // Arrange
     const payload = { title: "New Route" };
     const mockResponse = { success: true };
-    (global.fetch as any).mockResolvedValueOnce({
+    (global.fetch as import("vitest").Mock).mockResolvedValueOnce({
       ok: true,
       headers: new Headers({ "content-type": "application/json" }),
       json: async () => mockResponse,
@@ -65,7 +65,7 @@ describe("api utility", () => {
   it("request_EmptyStringPayload_handlesCorrectly", async () => {
     // Arrange
     const payload = "";
-    (global.fetch as any).mockResolvedValueOnce({
+    (global.fetch as import("vitest").Mock).mockResolvedValueOnce({
       ok: true,
       headers: new Headers({ "content-type": "application/json" }),
       json: async () => ({}),
@@ -87,7 +87,7 @@ describe("api utility", () => {
 
   it("request_NoContentTypeHeader_handlesEmptyResponseGracefully", async () => {
     // Arrange
-    (global.fetch as any).mockResolvedValueOnce({
+    (global.fetch as import("vitest").Mock).mockResolvedValueOnce({
       ok: true,
       headers: new Headers(), // No content-type
       status: 204,
@@ -103,7 +103,7 @@ describe("api utility", () => {
   // --- Extraordinary Cases ---
   it("request_NetworkFailure_throwsAppropriateError", async () => {
     // Arrange
-    (global.fetch as any).mockRejectedValueOnce(new Error("Network offline"));
+    (global.fetch as import("vitest").Mock).mockRejectedValueOnce(new Error("Network offline"));
 
     // Act / Assert
     await expect(api.get("/test")).rejects.toThrow(
@@ -114,7 +114,7 @@ describe("api utility", () => {
   it("request_ApiErrorResponse_throwsApiErrorWithStatus", async () => {
     // Arrange
     const errorData = { detail: "Unauthorized access" };
-    (global.fetch as any).mockResolvedValueOnce({
+    (global.fetch as import("vitest").Mock).mockResolvedValueOnce({
       ok: false,
       status: 401,
       statusText: "Unauthorized",
@@ -126,12 +126,13 @@ describe("api utility", () => {
     try {
       await api.get("/secure-data");
       expect.fail("Should have thrown an ApiError");
-    } catch (err: any) {
+    } catch (err) {
+      const e = err as { name: string; status: number; message: string; data: unknown };
       // Assert
-      expect(err.name).toBe("ApiError");
-      expect(err.status).toBe(401);
-      expect(err.message).toBe("Unauthorized access");
-      expect(err.data).toEqual(errorData);
+      expect(e.name).toBe("ApiError");
+      expect(e.status).toBe(401);
+      expect(e.message).toBe("Unauthorized access");
+      expect(e.data).toEqual(errorData);
     }
   });
 
@@ -139,7 +140,7 @@ describe("api utility", () => {
     // Arrange
     const massiveString = "A".repeat(100000);
     const payload = { heavy: massiveString };
-    (global.fetch as any).mockResolvedValueOnce({
+    (global.fetch as import("vitest").Mock).mockResolvedValueOnce({
       ok: true,
       headers: new Headers({ "content-type": "application/json" }),
       json: async () => ({ success: true }),
@@ -164,7 +165,7 @@ describe("api utility", () => {
   it("request_nullPayload_handlesCorrectly", async () => {
     // Arrange
     const payload = null;
-    (global.fetch as any).mockResolvedValueOnce({
+    (global.fetch as import("vitest").Mock).mockResolvedValueOnce({
       ok: true,
       headers: new Headers({ "content-type": "application/json" }),
       json: async () => ({ success: true }),

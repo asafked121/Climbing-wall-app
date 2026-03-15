@@ -48,8 +48,9 @@ export const AdminSetters: React.FC = () => {
       });
       setNewSetterName("");
       fetchSetters();
-    } catch (err: any) {
-      setError(err.message || "Failed to add setter");
+    } catch (err) {
+      const e = err as Error;
+      setError(e.message || "Failed to add setter");
     } finally {
       setIsLoadingSetters(false);
     }
@@ -60,8 +61,9 @@ export const AdminSetters: React.FC = () => {
     try {
       await api.delete(`/admin/setters/${setterId}`);
       fetchSetters();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const e = err as Error;
+      setError(e.message);
     }
   };
 

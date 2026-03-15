@@ -49,8 +49,9 @@ export const AdminColors: React.FC = () => {
       });
       setNewColorName("");
       fetchColors();
-    } catch (err: any) {
-      setError(err.message || "Failed to add color");
+    } catch (err) {
+      const e = err as Error;
+      setError(e.message || "Failed to add color");
     } finally {
       setIsLoadingColors(false);
     }
@@ -61,8 +62,9 @@ export const AdminColors: React.FC = () => {
     try {
       await api.delete(`/admin/colors/${colorId}`);
       fetchColors();
-    } catch (err: any) {
-      setError(err.message || "Failed to delete color");
+    } catch (err) {
+      const e = err as Error;
+      setError(e.message || "Failed to delete color");
     }
   };
 

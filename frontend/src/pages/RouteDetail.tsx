@@ -130,7 +130,7 @@ export const RouteDetail: React.FC = () => {
       if (showLoader) setIsLoading(true);
       const data = await api.get<RouteDetail>(`/routes/${id}`);
       setRoute(data);
-    } catch (err: any) {
+    } catch {
       setError("Failed to load route details.");
     } finally {
       if (showLoader) setIsLoading(false);
@@ -139,6 +139,7 @@ export const RouteDetail: React.FC = () => {
 
   useEffect(() => {
     fetchRouteDetail();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
@@ -212,7 +213,7 @@ export const RouteDetail: React.FC = () => {
     setEditError("");
     try {
       setIsSubmitting(true);
-      const updatePayload: Record<string, any> = {};
+      const updatePayload: Record<string, unknown> = {};
       if (editZoneId !== "" && editZoneId !== route.zone_id)
         updatePayload.zone_id = editZoneId;
       if (editColor && editColor !== route.color)
@@ -236,8 +237,9 @@ export const RouteDetail: React.FC = () => {
       }
       setIsEditing(false);
       await fetchRouteDetail(false);
-    } catch (err: any) {
-      setEditError(err.message || "Failed to update route.");
+    } catch (err) {
+      const e = err as Error;
+      setEditError(e.message || "Failed to update route.");
     } finally {
       setIsSubmitting(false);
     }
@@ -252,7 +254,7 @@ export const RouteDetail: React.FC = () => {
         status: newStatus,
       });
       await fetchRouteDetail(false);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Failed to toggle archive", err);
     } finally {
       setIsSubmitting(false);
@@ -268,7 +270,7 @@ export const RouteDetail: React.FC = () => {
       await api.post(`/routes/${id}/comments`, { content: newComment });
       setNewComment("");
       await fetchRouteDetail(false); // Refresh data
-    } catch (err: any) {
+    } catch (err) {
       console.error("Failed to post comment", err);
     } finally {
       setIsSubmitting(false);
@@ -283,7 +285,7 @@ export const RouteDetail: React.FC = () => {
       await api.post(`/routes/${id}/votes`, { voted_grade: votedGrade });
       setVotedGrade("");
       await fetchRouteDetail(false);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Failed to submit vote", err);
     } finally {
       setIsSubmitting(false);
@@ -297,7 +299,7 @@ export const RouteDetail: React.FC = () => {
       await api.post(`/routes/${id}/ratings`, { rating: selectedRating });
       setRating(selectedRating);
       await fetchRouteDetail(false);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Failed to submit rating", err);
     } finally {
       setIsSubmitting(false);
@@ -310,7 +312,7 @@ export const RouteDetail: React.FC = () => {
       setIsSubmitting(true);
       await api.post(`/routes/${id}/ascents`, { ascent_type: ascentType });
       await fetchRouteDetail(false);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Failed to log ascent", err);
     } finally {
       setIsSubmitting(false);
@@ -328,7 +330,7 @@ export const RouteDetail: React.FC = () => {
       setIsSubmitting(true);
       await api.delete(`/routes/ascents/${ascentRecord.id}`);
       await fetchRouteDetail(false);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Failed to unlog ascent", err);
     } finally {
       setIsSubmitting(false);

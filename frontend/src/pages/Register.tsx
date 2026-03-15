@@ -75,16 +75,20 @@ export const Register: React.FC = () => {
       const dobString = `${birthYear}-${birthMonth.padStart(2, "0")}-01`;
       await register(email, password, username || undefined, dobString);
       navigate("/");
-    } catch (err: any) {
+    } catch (err) {
       // Check if it's the backend 422 error for underage (should not hit this unless bypassing frontend)
+      const errorObj = err as {
+        message?: string;
+        response?: { data?: { detail?: { msg?: string }[] }; status?: number };
+      };
       if (
-        err.response?.status === 422 &&
-        err.response?.data?.detail?.[0]?.msg?.includes("13 years old")
+        errorObj.response?.status === 422 &&
+        errorObj.response?.data?.detail?.[0]?.msg?.includes("13 years old")
       ) {
         setIsAgeBlocked(true);
         localStorage.setItem("age_gate_failed", "true");
       } else {
-        setError(err.message || "Failed to create account.");
+        setError(errorObj.message || "Failed to create account.");
       }
     } finally {
       setIsLoading(false);
