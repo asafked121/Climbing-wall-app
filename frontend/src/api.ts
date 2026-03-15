@@ -4,106 +4,114 @@
  * Automatically includes credentials (HttpOnly cookies) in all requests.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
 interface RequestOptions extends RequestInit {
-    data?: any;
+  data?: unknown;
 }
 
 class ApiError extends Error {
-    status: number;
-    data: any;
+  status: number;
+  data: unknown;
 
-    constructor(status: number, data: any, message: string) {
-        super(message);
-        this.status = status;
-        this.data = data;
-        this.name = 'ApiError';
-    }
+  constructor(status: number, data: unknown, message: string) {
+    super(message);
+    this.status = status;
+    this.data = data;
+    this.name = "ApiError";
+  }
 }
 
 export const api = {
-    async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
-        const { data, headers, ...customConfig } = options;
+  async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+    const { data, headers, ...customConfig } = options;
 
-        const config: RequestInit = {
-            ...customConfig,
-            headers: {
-                ...headers,
-            },
-            // CRITICAL SECURITY RULE: Include credentials to send HttpOnly cookies
-            credentials: 'include',
-        };
+    const config: RequestInit = {
+      ...customConfig,
+      headers: {
+        ...headers,
+      },
+      // CRITICAL SECURITY RULE: Include credentials to send HttpOnly cookies
+      credentials: "include",
+    };
 
-        // Only set Content-Type to application/json if data is not FormData
-        if (!(data instanceof FormData)) {
-            config.headers = {
-                'Content-Type': 'application/json',
-                ...config.headers
-            };
+    // Only set Content-Type to application/json if data is not FormData
+    if (!(data instanceof FormData)) {
+      config.headers = {
+        "Content-Type": "application/json",
+        ...config.headers,
+      };
+    }
+
+    if (data) {
+      if (data instanceof FormData) {
+        config.body = data;
+      } else {
+        config.body = JSON.stringify(data);
+      }
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+
+      let responseData;
+      if (response.status !== 204) {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          try {
+            responseData = await response.json();
+          } catch (e) {
+            console.warn("Expected JSON but parsing failed:", e);
+          }
         }
+      }
 
-        if (data) {
-            if (data instanceof FormData) {
-                config.body = data;
-            } else {
-                config.body = JSON.stringify(data);
-            }
-        }
+      if (!response.ok) {
+        throw new ApiError(
+          response.status,
+          responseData,
+          responseData?.detail || response.statusText || "An error occurred",
+        );
+      }
 
-        try {
-            const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+      return responseData as T;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw new Error(`Network error: ${(error as Error).message}`);
+    }
+  },
 
-            let responseData;
-            if (response.status !== 204) {
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                    try {
-                        responseData = await response.json();
-                    } catch (e) {
-                        console.warn("Expected JSON but parsing failed:", e);
-                    }
-                }
-            }
+  get<T>(endpoint: string, options?: RequestOptions) {
+    return this.request<T>(endpoint, { ...options, method: "GET" });
+  },
 
-            if (!response.ok) {
-                throw new ApiError(
-                    response.status,
-                    responseData,
-                    responseData?.detail || response.statusText || 'An error occurred'
-                );
-            }
+  post<T>(endpoint: string, data?: unknown, options?: RequestOptions) {
+    return this.request<T>(endpoint, { ...options, method: "POST", data });
+  },
 
-            return responseData as T;
-        } catch (error) {
-            if (error instanceof ApiError) {
-                throw error;
-            }
-            throw new Error(`Network error: ${(error as Error).message}`);
-        }
-    },
+  put<T>(endpoint: string, data?: unknown, options?: RequestOptions) {
+    return this.request<T>(endpoint, { ...options, method: "PUT", data });
+  },
 
-    get<T>(endpoint: string, options?: RequestOptions) {
-        return this.request<T>(endpoint, { ...options, method: 'GET' });
-    },
+  patch<T>(endpoint: string, data?: unknown, options?: RequestOptions) {
+    return this.request<T>(endpoint, { ...options, method: "PATCH", data });
+  },
 
-    post<T>(endpoint: string, data?: any, options?: RequestOptions) {
-        return this.request<T>(endpoint, { ...options, method: 'POST', data });
-    },
+  delete<T>(endpoint: string, options?: RequestOptions) {
+    return this.request<T>(endpoint, { ...options, method: "DELETE" });
+  },
 
-    put<T>(endpoint: string, data?: any, options?: RequestOptions) {
-        return this.request<T>(endpoint, { ...options, method: 'PUT', data });
-    },
-
-    patch<T>(endpoint: string, data?: any, options?: RequestOptions) {
-        return this.request<T>(endpoint, { ...options, method: 'PATCH', data });
-    },
-
-    delete<T>(endpoint: string, options?: RequestOptions) {
-        return this.request<T>(endpoint, { ...options, method: 'DELETE' });
-    },
-
-    postFormData<T>(endpoint: string, formData: FormData, options?: RequestOptions) {
-        return this.request<T>(endpoint, { ...options, method: 'POST', data: formData });
-    },
+  postFormData<T>(
+    endpoint: string,
+    formData: FormData,
+    options?: RequestOptions,
+  ) {
+    return this.request<T>(endpoint, {
+      ...options,
+      method: "POST",
+      data: formData,
+    });
+  },
 };

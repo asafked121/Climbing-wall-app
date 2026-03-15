@@ -11,8 +11,13 @@ from app.dependencies import get_current_super_admin
 router = APIRouter(prefix="/admin", tags=["analytics"])
 
 
-def _base_route_query(db: Session, status: Optional[str], route_type: Optional[str],
-                      date_from: Optional[date], date_to: Optional[date]):
+def _base_route_query(
+    db: Session,
+    status: Optional[str],
+    route_type: Optional[str],
+    date_from: Optional[date],
+    date_to: Optional[date],
+):
     """Return a base query on Route with optional filters applied."""
     query = db.query(models.Route)
     if status:
@@ -28,8 +33,13 @@ def _base_route_query(db: Session, status: Optional[str], route_type: Optional[s
     return query
 
 
-def _apply_route_filters(query, status: Optional[str], route_type: Optional[str],
-                         date_from: Optional[date], date_to: Optional[date]):
+def _apply_route_filters(
+    query,
+    status: Optional[str],
+    route_type: Optional[str],
+    date_from: Optional[date],
+    date_to: Optional[date],
+):
     """Apply route filters to a query that already has Route joined."""
     if status:
         query = query.filter(models.Route.status == status)
@@ -78,13 +88,12 @@ def _build_route_status(db, route_type, date_from, date_to) -> dict:
         query = query.filter(models.Route.set_date >= date_from)
     if date_to:
         query = query.filter(models.Route.set_date <= date_to)
-    rows = (
-        query.with_entities(
-            func.sum(case((models.Route.status == "active", 1), else_=0)).label("active"),
-            func.sum(case((models.Route.status == "archived", 1), else_=0)).label("archived"),
-        )
-        .one()
-    )
+    rows = query.with_entities(
+        func.sum(case((models.Route.status == "active", 1), else_=0)).label("active"),
+        func.sum(case((models.Route.status == "archived", 1), else_=0)).label(
+            "archived"
+        ),
+    ).one()
     return {"active": rows.active or 0, "archived": rows.archived or 0}
 
 
@@ -102,16 +111,12 @@ def _build_zone_utilization(db, status, route_type, date_from, date_to) -> list[
     for cond in join_conditions[1:]:
         combined = combined & cond
 
-    query = (
-        db.query(models.Zone.name, func.count(models.Route.id))
-        .outerjoin(models.Route, combined)
+    query = db.query(models.Zone.name, func.count(models.Route.id)).outerjoin(
+        models.Route, combined
     )
     if route_type:
         query = query.filter(models.Zone.route_type == route_type)
-    rows = (
-        query.group_by(models.Zone.id, models.Zone.name)
-        .all()
-    )
+    rows = query.group_by(models.Zone.id, models.Zone.name).all()
     return [{"zone": name, "count": count} for name, count in rows]
 
 
@@ -120,10 +125,9 @@ def _build_activity_trend(db, status, route_type, date_from, date_to) -> list[di
     today = datetime.now(timezone.utc).date()
     start_date = today - timedelta(days=29)
 
-    query = (
-        db.query(func.date(models.Ascent.date).label("day"), func.count(models.Ascent.id))
-        .filter(func.date(models.Ascent.date) >= start_date)
-    )
+    query = db.query(
+        func.date(models.Ascent.date).label("day"), func.count(models.Ascent.id)
+    ).filter(func.date(models.Ascent.date) >= start_date)
 
     if status or route_type or date_from or date_to:
         query = query.join(models.Route, models.Route.id == models.Ascent.route_id)
@@ -140,7 +144,9 @@ def _build_activity_trend(db, status, route_type, date_from, date_to) -> list[di
     return trend
 
 
-def _build_rating_distribution(db, status, route_type, date_from, date_to) -> list[dict]:
+def _build_rating_distribution(
+    db, status, route_type, date_from, date_to
+) -> list[dict]:
     """Count of each star rating (1–5)."""
     query = db.query(models.RouteRating.rating, func.count(models.RouteRating.id))
 
@@ -155,16 +161,13 @@ def _build_rating_distribution(db, status, route_type, date_from, date_to) -> li
 
 def _build_top_rated_routes(db, status, route_type, date_from, date_to) -> list[dict]:
     """Top 5 routes by average rating (minimum 1 rating)."""
-    query = (
-        db.query(
-            models.Route.id,
-            models.Route.intended_grade,
-            models.Route.color,
-            func.avg(models.RouteRating.rating).label("avg_rating"),
-            func.count(models.RouteRating.id).label("rating_count"),
-        )
-        .join(models.RouteRating, models.RouteRating.route_id == models.Route.id)
-    )
+    query = db.query(
+        models.Route.id,
+        models.Route.intended_grade,
+        models.Route.color,
+        func.avg(models.RouteRating.rating).label("avg_rating"),
+        func.count(models.RouteRating.id).label("rating_count"),
+    ).join(models.RouteRating, models.RouteRating.route_id == models.Route.id)
     query = _apply_route_filters(query, status, route_type, date_from, date_to)
 
     rows = (
@@ -187,20 +190,40 @@ def _build_top_rated_routes(db, status, route_type, date_from, date_to) -> list[
 
 @router.get("/analytics", response_model=schemas.AnalyticsResponse)
 def get_analytics(
-    status: Optional[str] = Query(None, description="Filter by route status: 'active' or 'archived'"),
-    route_type: Optional[str] = Query(None, description="Filter by route type: 'boulder' or 'top_rope'"),
-    date_from: Optional[date] = Query(None, description="Filter routes set on or after this date (YYYY-MM-DD)"),
-    date_to: Optional[date] = Query(None, description="Filter routes set on or before this date (YYYY-MM-DD)"),
+    status: Optional[str] = Query(
+        None, description="Filter by route status: 'active' or 'archived'"
+    ),
+    route_type: Optional[str] = Query(
+        None, description="Filter by route type: 'boulder' or 'top_rope'"
+    ),
+    date_from: Optional[date] = Query(
+        None, description="Filter routes set on or after this date (YYYY-MM-DD)"
+    ),
+    date_to: Optional[date] = Query(
+        None, description="Filter routes set on or before this date (YYYY-MM-DD)"
+    ),
     db: Session = Depends(get_db),
     current_super_admin: models.User = Depends(get_current_super_admin),
 ):
     """Aggregated analytics data — super admin only."""
     return schemas.AnalyticsResponse(
-        grade_distribution=_build_grade_distribution(db, status, route_type, date_from, date_to),
-        ascents_by_grade=_build_ascents_by_grade(db, status, route_type, date_from, date_to),
+        grade_distribution=_build_grade_distribution(
+            db, status, route_type, date_from, date_to
+        ),
+        ascents_by_grade=_build_ascents_by_grade(
+            db, status, route_type, date_from, date_to
+        ),
         route_status=_build_route_status(db, route_type, date_from, date_to),
-        zone_utilization=_build_zone_utilization(db, status, route_type, date_from, date_to),
-        activity_trend=_build_activity_trend(db, status, route_type, date_from, date_to),
-        rating_distribution=_build_rating_distribution(db, status, route_type, date_from, date_to),
-        top_rated_routes=_build_top_rated_routes(db, status, route_type, date_from, date_to),
+        zone_utilization=_build_zone_utilization(
+            db, status, route_type, date_from, date_to
+        ),
+        activity_trend=_build_activity_trend(
+            db, status, route_type, date_from, date_to
+        ),
+        rating_distribution=_build_rating_distribution(
+            db, status, route_type, date_from, date_to
+        ),
+        top_rated_routes=_build_top_rated_routes(
+            db, status, route_type, date_from, date_to
+        ),
     )

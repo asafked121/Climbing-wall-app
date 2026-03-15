@@ -6,10 +6,7 @@ from app import models, security
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-# Re-use the same test database pattern as test_admin_detailed.py
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test_admin.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+from app.database import Base, get_db, engine, SessionLocal as TestingSessionLocal
 
 # Import the CLI script (no .py extension) using importlib
 import importlib.util

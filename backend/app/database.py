@@ -9,16 +9,26 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 LOCAL_DB_PATH = os.path.join(BASE_DIR, "data", "climbing_wall.db")
 DEFAULT_DB_URL = f"sqlite:///{LOCAL_DB_PATH}"
 
-# Use environment variable if provided, else use local dev DB path
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", DEFAULT_DB_URL)
+import sys
 
-# connect_args={"check_same_thread": False} is needed for SQLite
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+# Use environment variable if provided, else use local dev DB path
+if "pytest" in sys.modules:
+    from sqlalchemy.pool import StaticPool
+    SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
+    engine = create_engine(
+        SQLALCHEMY_DATABASE_URL,
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+else:
+    SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", DEFAULT_DB_URL)
+    engine = create_engine(
+        SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+    )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
+
 
 def get_db():
     db = SessionLocal()

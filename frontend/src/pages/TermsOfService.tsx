@@ -1,109 +1,334 @@
-import React from 'react';
-import { Card } from '../components/Card';
+import React from "react";
+import { Card } from "../components/Card";
 
 export const TermsOfService: React.FC = () => {
-    return (
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
-            <Card>
-                <div style={{ padding: '1rem', color: 'var(--text-primary)', lineHeight: 1.6 }}>
-                    <h1 style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Terms of Service and Assumption of Risk</h1>
-                    <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}><strong>Last Updated:</strong> March 4, 2026</p>
+  return (
+    <div style={{ maxWidth: "800px", margin: "0 auto", padding: "2rem 1rem" }}>
+      <Card>
+        <div
+          style={{
+            padding: "1rem",
+            color: "var(--text-primary)",
+            lineHeight: 1.6,
+          }}
+        >
+          <h1
+            style={{
+              marginBottom: "1.5rem",
+              borderBottom: "1px solid var(--border-color)",
+              paddingBottom: "0.5rem",
+            }}
+          >
+            Terms of Service and Assumption of Risk
+          </h1>
+          <p style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}>
+            <strong>Last Updated:</strong> March 4, 2026
+          </p>
 
-                    <p>Welcome to the Climbing Wall App ("we," "our," or "us"). These Terms of Service ("Terms") govern your access to and use of our mobile applications, web applications, and related services (collectively, the "Service").</p>
+          <p>
+            Welcome to the Climbing Wall App ("we," "our," or "us"). These Terms
+            of Service ("Terms") govern your access to and use of our mobile
+            applications, web applications, and related services (collectively,
+            the "Service").
+          </p>
 
-                    <div style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '1rem', borderRadius: 'var(--radius-sm)', borderLeft: '4px solid var(--danger-color)', margin: '1.5rem 0' }}>
-                        <p style={{ margin: 0, fontWeight: 'bold' }}>PLEASE READ THESE TERMS CAREFULLY. THEY CONTAIN IMPORTANT INFORMATION REGARDING YOUR LEGAL RIGHTS, INCLUDING A BINDING ARBITRATION AGREEMENT, A CLASS ACTION WAIVER, AND A COMPREHENSIVE WAIVER OF LIABILITY AND ASSUMPTION OF RISK RELATED TO THE INHERENTLY DANGEROUS SPORT OF CLIMBING.</p>
-                    </div>
+          <div
+            style={{
+              background: "rgba(239, 68, 68, 0.1)",
+              padding: "1rem",
+              borderRadius: "var(--radius-sm)",
+              borderLeft: "4px solid var(--danger-color)",
+              margin: "1.5rem 0",
+            }}
+          >
+            <p style={{ margin: 0, fontWeight: "bold" }}>
+              PLEASE READ THESE TERMS CAREFULLY. THEY CONTAIN IMPORTANT
+              INFORMATION REGARDING YOUR LEGAL RIGHTS, INCLUDING A BINDING
+              ARBITRATION AGREEMENT, A CLASS ACTION WAIVER, AND A COMPREHENSIVE
+              WAIVER OF LIABILITY AND ASSUMPTION OF RISK RELATED TO THE
+              INHERENTLY DANGEROUS SPORT OF CLIMBING.
+            </p>
+          </div>
 
-                    <p>By accessing or using the Service, you agree to be bound by these Terms. If you do not agree to these Terms, you may not access or use the Service.</p>
+          <p>
+            By accessing or using the Service, you agree to be bound by these
+            Terms. If you do not agree to these Terms, you may not access or use
+            the Service.
+          </p>
 
-                    <h2 style={{ marginTop: '2.5rem', marginBottom: '1rem' }}>1. Eligibility and COPPA Compliance</h2>
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>1.1 Age Restrictions</h3>
-                    <p>You must be at least 13 years old to use the Service. If you are under 13 years of age, you are strictly prohibited from creating an account or providing any personal information.</p>
+          <h2 style={{ marginTop: "2.5rem", marginBottom: "1rem" }}>
+            1. Eligibility and COPPA Compliance
+          </h2>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            1.1 Age Restrictions
+          </h3>
+          <p>
+            You must be at least 13 years old to use the Service. If you are
+            under 13 years of age, you are strictly prohibited from creating an
+            account or providing any personal information.
+          </p>
 
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>1.2 Minor Users (Ages 13-17)</h3>
-                    <p>If you are between the ages of 13 and 17 (or the age of legal majority in your jurisdiction), you may only use the Service under the direct supervision and with the explicit consent of a parent or legal guardian who agrees to be bound by these Terms.</p>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            1.2 Minor Users (Ages 13-17)
+          </h3>
+          <p>
+            If you are between the ages of 13 and 17 (or the age of legal
+            majority in your jurisdiction), you may only use the Service under
+            the direct supervision and with the explicit consent of a parent or
+            legal guardian who agrees to be bound by these Terms.
+          </p>
 
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>1.3 Account Security</h3>
-                    <p>You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use.</p>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            1.3 Account Security
+          </h3>
+          <p>
+            You are responsible for maintaining the confidentiality of your
+            account credentials and for all activities that occur under your
+            account. You agree to notify us immediately of any unauthorized use.
+          </p>
 
-                    <h2 style={{ marginTop: '2.5rem', marginBottom: '1rem' }}>2. Express Assumption of Risk and Waiver of Liability</h2>
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>2.1 Inherently Dangerous Activity</h3>
-                    <p>Rock climbing, bouldering, training, and utilizing user-generated routing or beta videos ("Climbing Activities") are inherently dangerous activities. These activities involve significant risks, including but not limited to, the risk of severe property damage, bodily injury, permanent disability, paralysis, and death.</p>
+          <h2 style={{ marginTop: "2.5rem", marginBottom: "1rem" }}>
+            2. Express Assumption of Risk and Waiver of Liability
+          </h2>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            2.1 Inherently Dangerous Activity
+          </h3>
+          <p>
+            Rock climbing, bouldering, training, and utilizing user-generated
+            routing or beta videos ("Climbing Activities") are inherently
+            dangerous activities. These activities involve significant risks,
+            including but not limited to, the risk of severe property damage,
+            bodily injury, permanent disability, paralysis, and death.
+          </p>
 
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>2.2 Acknowledgment of Risk</h3>
-                    <p>By using the Service, you expressly acknowledge and agree that:</p>
-                    <ul style={{ paddingLeft: '1.5rem', marginBottom: '1rem' }}>
-                        <li>(a) You voluntarily choose to participate in Climbing Activities.</li>
-                        <li>(b) The routes, grades, beta videos, AI hold detections, and user instructions ("Climbing Content") provided on the Service are generated by third-party users and/or automated systems and are provided for informational and entertainment purposes <strong>ONLY</strong>.</li>
-                        <li>(c) We do not verify the safety, stability, or accuracy of any Climbing Content, including custom routes, holds, or the physical integrity of the walls depicted.</li>
-                    </ul>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            2.2 Acknowledgment of Risk
+          </h3>
+          <p>By using the Service, you expressly acknowledge and agree that:</p>
+          <ul style={{ paddingLeft: "1.5rem", marginBottom: "1rem" }}>
+            <li>
+              (a) You voluntarily choose to participate in Climbing Activities.
+            </li>
+            <li>
+              (b) The routes, grades, beta videos, AI hold detections, and user
+              instructions ("Climbing Content") provided on the Service are
+              generated by third-party users and/or automated systems and are
+              provided for informational and entertainment purposes{" "}
+              <strong>ONLY</strong>.
+            </li>
+            <li>
+              (c) We do not verify the safety, stability, or accuracy of any
+              Climbing Content, including custom routes, holds, or the physical
+              integrity of the walls depicted.
+            </li>
+          </ul>
 
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>2.3 Complete Waiver and Release</h3>
-                    <p>To the maximum extent permitted by applicable law, you hereby irrevocably release, waive, discharge, and covenant not to sue the Climbing Wall App, its developers, operators, affiliates, officers, directors, employees, and agents (the "Released Parties") from any and all liability, claims, demands, actions, or rights of action, which are related to, arise out of, or are in any way connected with your participation in Climbing Activities or your reliance on any Climbing Content found on the Service.</p>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            2.3 Complete Waiver and Release
+          </h3>
+          <p>
+            To the maximum extent permitted by applicable law, you hereby
+            irrevocably release, waive, discharge, and covenant not to sue the
+            Climbing Wall App, its developers, operators, affiliates, officers,
+            directors, employees, and agents (the "Released Parties") from any
+            and all liability, claims, demands, actions, or rights of action,
+            which are related to, arise out of, or are in any way connected with
+            your participation in Climbing Activities or your reliance on any
+            Climbing Content found on the Service.
+          </p>
 
-                    <h2 style={{ marginTop: '2.5rem', marginBottom: '1rem' }}>3. User-Generated Content (UGC)</h2>
-                    <p>The Service permits users to upload, post, and share content, including but not limited to custom routes, beta videos, photos of walls, markings, text comments, and grade votes ("UGC").</p>
+          <h2 style={{ marginTop: "2.5rem", marginBottom: "1rem" }}>
+            3. User-Generated Content (UGC)
+          </h2>
+          <p>
+            The Service permits users to upload, post, and share content,
+            including but not limited to custom routes, beta videos, photos of
+            walls, markings, text comments, and grade votes ("UGC").
+          </p>
 
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>3.1 License Grant</h3>
-                    <p>By posting UGC, you grant us a worldwide, non-exclusive, royalty-free, transferable, sublicensable license to use, reproduce, distribute, prepare derivative works of, and display your UGC in connection with operating and providing the Service.</p>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            3.1 License Grant
+          </h3>
+          <p>
+            By posting UGC, you grant us a worldwide, non-exclusive,
+            royalty-free, transferable, sublicensable license to use, reproduce,
+            distribute, prepare derivative works of, and display your UGC in
+            connection with operating and providing the Service.
+          </p>
 
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>3.2 Your Responsibilities</h3>
-                    <p>You represent and warrant that:</p>
-                    <ul style={{ paddingLeft: '1.5rem', marginBottom: '1rem' }}>
-                        <li>You own or have the necessary licenses, rights, and permissions to publish the UGC.</li>
-                        <li>Your UGC does not infringe on the intellectual property rights, privacy rights, or publicity rights of any third party.</li>
-                        <li>Your UGC does not contain malicious code, AI manipulation designed to deceive safety protocols, or explicit/illegal material.</li>
-                    </ul>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            3.2 Your Responsibilities
+          </h3>
+          <p>You represent and warrant that:</p>
+          <ul style={{ paddingLeft: "1.5rem", marginBottom: "1rem" }}>
+            <li>
+              You own or have the necessary licenses, rights, and permissions to
+              publish the UGC.
+            </li>
+            <li>
+              Your UGC does not infringe on the intellectual property rights,
+              privacy rights, or publicity rights of any third party.
+            </li>
+            <li>
+              Your UGC does not contain malicious code, AI manipulation designed
+              to deceive safety protocols, or explicit/illegal material.
+            </li>
+          </ul>
 
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>3.3 Content Moderation and Removal</h3>
-                    <p>We act solely as a passive conduit for your online distribution and publication of UGC. However, we reserve the right (but have no obligation) to review, monitor, flag, filter, modify, refuse, or remove any or all UGC from the Service at our sole discretion, without notice, particularly if such content violates these Terms or poses a threat to user safety.</p>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            3.3 Content Moderation and Removal
+          </h3>
+          <p>
+            We act solely as a passive conduit for your online distribution and
+            publication of UGC. However, we reserve the right (but have no
+            obligation) to review, monitor, flag, filter, modify, refuse, or
+            remove any or all UGC from the Service at our sole discretion,
+            without notice, particularly if such content violates these Terms or
+            poses a threat to user safety.
+          </p>
 
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>3.4 DMCA Copyright Policy</h3>
-                    <p>We respect the intellectual property rights of others. We will respond promptly to valid notices of alleged copyright infringement that comply with the Digital Millennium Copyright Act ("DMCA").</p>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            3.4 DMCA Copyright Policy
+          </h3>
+          <p>
+            We respect the intellectual property rights of others. We will
+            respond promptly to valid notices of alleged copyright infringement
+            that comply with the Digital Millennium Copyright Act ("DMCA").
+          </p>
 
-                    <h2 style={{ marginTop: '2.5rem', marginBottom: '1rem' }}>4. Artificial Intelligence & Automated Tools</h2>
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>4.1 AI Hold Detection</h3>
-                    <p>The Service may utilize artificial intelligence ("AI") to auto-detect holds, parse photos, or suggest routing. You acknowledge that AI technologies are experimental and prone to errors. You must independently verify the physical reality, safety, and stability of any hold or route before attempting to climb it.</p>
+          <h2 style={{ marginTop: "2.5rem", marginBottom: "1rem" }}>
+            4. Artificial Intelligence & Automated Tools
+          </h2>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            4.1 AI Hold Detection
+          </h3>
+          <p>
+            The Service may utilize artificial intelligence ("AI") to
+            auto-detect holds, parse photos, or suggest routing. You acknowledge
+            that AI technologies are experimental and prone to errors. You must
+            independently verify the physical reality, safety, and stability of
+            any hold or route before attempting to climb it.
+          </p>
 
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>4.2 Disclaimer of AI Reliability</h3>
-                    <p>The Released Parties bear no liability for injuries sustained resulting from reliance on AI-generated routing, hold selection, or beta generation.</p>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            4.2 Disclaimer of AI Reliability
+          </h3>
+          <p>
+            The Released Parties bear no liability for injuries sustained
+            resulting from reliance on AI-generated routing, hold selection, or
+            beta generation.
+          </p>
 
-                    <h2 style={{ marginTop: '2.5rem', marginBottom: '1rem' }}>5. Indemnification</h2>
-                    <p>You agree to defend, indemnify, and hold harmless the Released Parties from and against any and all claims, damages, obligations, losses, liabilities, costs, or debt, and expenses (including but not limited to attorney's fees) arising from:</p>
-                    <ul style={{ paddingLeft: '1.5rem', marginBottom: '1rem' }}>
-                        <li>(a) Your use of and access to the Service;</li>
-                        <li>(b) Your violation of any term of these Terms;</li>
-                        <li>(c) Your violation of any third-party right, including without limitation any copyright, property, or privacy right; or</li>
-                        <li>(d) Any claim that your UGC caused damage to a third party (including physical injury).</li>
-                    </ul>
+          <h2 style={{ marginTop: "2.5rem", marginBottom: "1rem" }}>
+            5. Indemnification
+          </h2>
+          <p>
+            You agree to defend, indemnify, and hold harmless the Released
+            Parties from and against any and all claims, damages, obligations,
+            losses, liabilities, costs, or debt, and expenses (including but not
+            limited to attorney's fees) arising from:
+          </p>
+          <ul style={{ paddingLeft: "1.5rem", marginBottom: "1rem" }}>
+            <li>(a) Your use of and access to the Service;</li>
+            <li>(b) Your violation of any term of these Terms;</li>
+            <li>
+              (c) Your violation of any third-party right, including without
+              limitation any copyright, property, or privacy right; or
+            </li>
+            <li>
+              (d) Any claim that your UGC caused damage to a third party
+              (including physical injury).
+            </li>
+          </ul>
 
-                    <h2 style={{ marginTop: '2.5rem', marginBottom: '1rem' }}>6. Disclaimers and Limitations of Liability</h2>
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>6.1 "As Is" Basis</h3>
-                    <p style={{ textTransform: 'uppercase' }}>The Service is provided on an "as is" and "as available" basis. We expressly disclaim all warranties of any kind, whether express or implied, including, but not limited to, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement.</p>
+          <h2 style={{ marginTop: "2.5rem", marginBottom: "1rem" }}>
+            6. Disclaimers and Limitations of Liability
+          </h2>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            6.1 "As Is" Basis
+          </h3>
+          <p style={{ textTransform: "uppercase" }}>
+            The Service is provided on an "as is" and "as available" basis. We
+            expressly disclaim all warranties of any kind, whether express or
+            implied, including, but not limited to, the implied warranties of
+            merchantability, fitness for a particular purpose, and
+            non-infringement.
+          </p>
 
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>6.2 Limitation of Liability</h3>
-                    <p style={{ textTransform: 'uppercase' }}>In no event shall the Released Parties be liable to you or any third party for any indirect, consequential, exemplary, incidental, special, or punitive damages, including lost profit damages arising from your use of the Service, even if we have been advised of the possibility of such damages.</p>
-                    <p style={{ textTransform: 'uppercase' }}>Notwithstanding anything to the contrary contained herein, our liability to you for any cause whatsoever and regardless of the form of the action, will at all times be limited to the amount paid, if any, by you to us for the Service during the three (3) months prior to the event giving rise to liability.</p>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            6.2 Limitation of Liability
+          </h3>
+          <p style={{ textTransform: "uppercase" }}>
+            In no event shall the Released Parties be liable to you or any third
+            party for any indirect, consequential, exemplary, incidental,
+            special, or punitive damages, including lost profit damages arising
+            from your use of the Service, even if we have been advised of the
+            possibility of such damages.
+          </p>
+          <p style={{ textTransform: "uppercase" }}>
+            Notwithstanding anything to the contrary contained herein, our
+            liability to you for any cause whatsoever and regardless of the form
+            of the action, will at all times be limited to the amount paid, if
+            any, by you to us for the Service during the three (3) months prior
+            to the event giving rise to liability.
+          </p>
 
-                    <h2 style={{ marginTop: '2.5rem', marginBottom: '1rem' }}>7. Governing Law and Dispute Resolution</h2>
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>7.1 Governing Law</h3>
-                    <p>These Terms shall be governed by the laws of the State of Delaware, USA, without respect to its conflict of laws principles.</p>
+          <h2 style={{ marginTop: "2.5rem", marginBottom: "1rem" }}>
+            7. Governing Law and Dispute Resolution
+          </h2>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            7.1 Governing Law
+          </h3>
+          <p>
+            These Terms shall be governed by the laws of the State of Delaware,
+            USA, without respect to its conflict of laws principles.
+          </p>
 
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>7.2 Binding Arbitration</h3>
-                    <p>Any dispute, claim, or controversy arising out of or relating to these Terms or the breach, termination, enforcement, interpretation, or validity thereof, including the determination of the scope or applicability of this agreement to arbitrate, shall be determined by binding arbitration rather than in court.</p>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            7.2 Binding Arbitration
+          </h3>
+          <p>
+            Any dispute, claim, or controversy arising out of or relating to
+            these Terms or the breach, termination, enforcement, interpretation,
+            or validity thereof, including the determination of the scope or
+            applicability of this agreement to arbitrate, shall be determined by
+            binding arbitration rather than in court.
+          </p>
 
-                    <h3 style={{ fontSize: '1.1rem', marginTop: '1.5rem' }}>7.3 Class Action Waiver</h3>
-                    <p style={{ textTransform: 'uppercase' }}>You and we agree that each may bring claims against the other only in your or our individual capacity, and not as a plaintiff or class member in any purported class or representative proceeding.</p>
+          <h3 style={{ fontSize: "1.1rem", marginTop: "1.5rem" }}>
+            7.3 Class Action Waiver
+          </h3>
+          <p style={{ textTransform: "uppercase" }}>
+            You and we agree that each may bring claims against the other only
+            in your or our individual capacity, and not as a plaintiff or class
+            member in any purported class or representative proceeding.
+          </p>
 
-                    <h2 style={{ marginTop: '2.5rem', marginBottom: '1rem' }}>8. Modifications to the Terms</h2>
-                    <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms.</p>
+          <h2 style={{ marginTop: "2.5rem", marginBottom: "1rem" }}>
+            8. Modifications to the Terms
+          </h2>
+          <p>
+            We reserve the right, at our sole discretion, to modify or replace
+            these Terms at any time. By continuing to access or use our Service
+            after those revisions become effective, you agree to be bound by the
+            revised terms.
+          </p>
 
-                    <div style={{ marginTop: '3rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-color)', fontStyle: 'italic', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                        For any questions regarding these Terms, please contact legal@climbapp.local.
-                    </div>
-                </div>
-            </Card>
+          <div
+            style={{
+              marginTop: "3rem",
+              paddingTop: "1.5rem",
+              borderTop: "1px solid var(--border-color)",
+              fontStyle: "italic",
+              textAlign: "center",
+              color: "var(--text-secondary)",
+            }}
+          >
+            For any questions regarding these Terms, please contact
+            legal@climbapp.local.
+          </div>
         </div>
-    );
+      </Card>
+    </div>
+  );
 };

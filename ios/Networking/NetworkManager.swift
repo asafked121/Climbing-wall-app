@@ -17,7 +17,7 @@ enum APIError: Error, LocalizedError {
 
 class NetworkManager {
     static let shared = NetworkManager()
-    let baseURL = URL(string: "http://127.0.0.1:8000")!
+    let baseURL = URL(string: "http://climb.local:8000")!
     private let session: URLSession
     
     private init() {

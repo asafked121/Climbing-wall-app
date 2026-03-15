@@ -1,28 +1,30 @@
 .auth-layout {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    width: 100%;
-    padding: 1.5rem;
-    background: radial-gradient(circle at top center, var(--primary-glow), transparent 60%), var(--bg-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  padding: 1.5rem;
+  background:
+    radial-gradient(circle at top center, var(--primary-glow), transparent 60%),
+    var(--bg-color);
 }
 
 .auth-content {
-    width: 100%;
-    max-width: 380px;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    z-index: 10;
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 10;
 }
 
 .auth-logo {
-    font-size: 2.75rem;
-    font-weight: 700;
-    text-align: center;
-    color: var(--primary-color);
-    margin-bottom: 2rem;
-    text-shadow: var(--shadow-glow);
-    letter-spacing: -1px;
+  font-size: 2.75rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--primary-color);
+  margin-bottom: 2rem;
+  text-shadow: var(--shadow-glow);
+  letter-spacing: -1px;
 }

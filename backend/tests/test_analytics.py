@@ -8,11 +8,7 @@ from app import security, models
 from datetime import datetime, timedelta, timezone
 
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test_admin.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base.metadata.create_all(bind=engine)
+from app.database import Base, get_db, engine, SessionLocal as TestingSessionLocal
 
 
 def override_get_db():
@@ -127,7 +123,7 @@ def test_getAnalytics_superAdmin_returnsAllMetrics(auth_headers, seeded_data):
 
 def test_getAnalytics_gradeDistribution_countsActiveRoutes(auth_headers, seeded_data):
     """Grade distribution should only count active routes."""
-    response = client.get("/admin/analytics", headers=auth_headers["super_admin"])
+    response = client.get("/admin/analytics?status=active", headers=auth_headers["super_admin"])
     data = response.json()
 
     grades = {item["grade"]: item["count"] for item in data["grade_distribution"]}

@@ -89,3 +89,34 @@ def test_register_Extraordinary_Under13(client):
     )
     assert response.status_code == 422
     assert "User must be at least 13 years old to register." in response.json()["detail"][0]["msg"]
+
+def test_lifespan_seed_admin_Normal_Success():
+    import os
+    os.environ["SUPER_ADMIN_USERNAME"] = "test_super_admin_seed"
+    os.environ["SUPER_ADMIN_EMAIL"] = "test_super_seed@google.com"
+    os.environ["SUPER_ADMIN_PASSWORD"] = "test_super_password"
+
+    from app.main import lifespan
+    from fastapi import FastAPI
+    from app.database import SessionLocal, Base, engine
+    from app.models import User
+
+    test_app = FastAPI()
+    Base.metadata.create_all(bind=engine)
+    
+    import asyncio
+    
+    async def run_lifespan():
+        async with lifespan(test_app):
+            db = SessionLocal()
+            admin = db.query(User).filter(User.username == "test_super_admin_seed").first()
+            assert admin is not None
+            assert admin.email == "test_super_seed@google.com"
+            assert admin.role == "super_admin"
+            
+            # Clean up the test admin
+            db.delete(admin)
+            db.commit()
+            db.close()
+
+    asyncio.run(run_lifespan())
