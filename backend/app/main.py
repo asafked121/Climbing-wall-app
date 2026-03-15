@@ -5,9 +5,9 @@ from app.database import engine
 from app.routers import auth, admin, climbing_routes, interactions, analytics
 
 import os
+import sys
 
 from sqlalchemy import inspect
-import os
 
 
 # Intelligent Database Setup
@@ -109,8 +109,9 @@ app.include_router(interactions.router)
 app.include_router(analytics.router)
 
 PHOTO_DIR = os.getenv("PHOTO_DIR", "/app/photos")
-os.makedirs(PHOTO_DIR, exist_ok=True)
-app.mount("/photos", StaticFiles(directory=PHOTO_DIR), name="photos")
+if "pytest" not in sys.modules:
+    os.makedirs(PHOTO_DIR, exist_ok=True)
+    app.mount("/photos", StaticFiles(directory=PHOTO_DIR), name="photos")
 
 
 @app.get("/")
