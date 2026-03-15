@@ -2,11 +2,13 @@ from pydantic import BaseModel, EmailStr, ConfigDict, field_validator
 from datetime import datetime, date
 from typing import Optional, List
 
+
 # --- User Schemas ---
 class UserBase(BaseModel):
     email: EmailStr
     username: str
     role: str = "student"
+
 
 class UserCreate(UserBase):
     username: Optional[str] = None
@@ -24,14 +26,18 @@ class UserCreate(UserBase):
             raise ValueError("User must be at least 13 years old to register.")
         return v
 
+
 class UserUpdate(BaseModel):
     username: str
+
 
 class UserRoleUpdate(BaseModel):
     role: str
 
+
 class UserBanUpdate(BaseModel):
     is_banned: bool
+
 
 class UserResponse(UserBase):
     id: int
@@ -39,16 +45,20 @@ class UserResponse(UserBase):
     created_at: datetime
     model_config = ConfigDict(from_attributes=True)
 
+
 # --- Setter Schemas ---
 class SetterBase(BaseModel):
     name: str
 
+
 class SetterCreate(SetterBase):
     is_active: bool = True
+
 
 class SetterUpdate(BaseModel):
     name: Optional[str] = None
     is_active: Optional[bool] = None
+
 
 class SetterResponse(SetterBase):
     id: int
@@ -56,8 +66,10 @@ class SetterResponse(SetterBase):
     created_at: datetime
     model_config = ConfigDict(from_attributes=True)
 
+
 # --- Zone Schemas ---
 VALID_ROUTE_TYPES = {"boulder", "top_rope"}
+
 
 class ZoneBase(BaseModel):
     name: str
@@ -71,25 +83,31 @@ class ZoneBase(BaseModel):
             raise ValueError(f"route_type must be one of {VALID_ROUTE_TYPES}")
         return value
 
+
 class ZoneCreate(ZoneBase):
     pass
+
 
 class ZoneResponse(ZoneBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
+
 
 # --- Color Schemas ---
 class ColorBase(BaseModel):
     name: str
     hex_value: str
 
+
 class ColorCreate(ColorBase):
     pass
+
 
 class ColorResponse(ColorBase):
     id: int
     created_at: datetime
     model_config = ConfigDict(from_attributes=True)
+
 
 # --- Route Schemas ---
 class RouteBase(BaseModel):
@@ -99,9 +117,11 @@ class RouteBase(BaseModel):
     status: str = "active"
     photo_url: Optional[str] = None
 
+
 class RouteCreate(RouteBase):
     setter_id: Optional[int] = None
     set_date: Optional[date] = None
+
 
 class RouteUpdate(BaseModel):
     zone_id: Optional[int] = None
@@ -111,6 +131,7 @@ class RouteUpdate(BaseModel):
     status: Optional[str] = None
     set_date: Optional[date] = None
 
+
 class RouteResponse(RouteBase):
     id: int
     setter_id: Optional[int] = None
@@ -119,13 +140,16 @@ class RouteResponse(RouteBase):
     color_name: Optional[str] = None
     model_config = ConfigDict(from_attributes=True)
 
+
 class RouteArchive(BaseModel):
     status: str = "archived"
+
 
 class BulkUploadRowError(BaseModel):
     row: int
     field: Optional[str] = None
     message: str
+
 
 class BulkUploadResponse(BaseModel):
     total_rows: int
@@ -133,12 +157,15 @@ class BulkUploadResponse(BaseModel):
     error_count: int
     errors: List[BulkUploadRowError] = []
 
+
 # --- GradeVote Schemas ---
 class GradeVoteBase(BaseModel):
     voted_grade: str
 
+
 class GradeVoteCreate(GradeVoteBase):
     pass
+
 
 class GradeVoteResponse(GradeVoteBase):
     id: int
@@ -147,12 +174,15 @@ class GradeVoteResponse(GradeVoteBase):
     created_at: datetime
     model_config = ConfigDict(from_attributes=True)
 
+
 # --- Comment Schemas ---
 class CommentBase(BaseModel):
     content: str
 
+
 class CommentCreate(CommentBase):
     pass
+
 
 class CommentResponse(CommentBase):
     id: int
@@ -162,14 +192,18 @@ class CommentResponse(CommentBase):
     user: Optional[UserResponse] = None
     model_config = ConfigDict(from_attributes=True)
 
+
 # --- Route Rating Schemas ---
 from pydantic import Field
+
 
 class RouteRatingBase(BaseModel):
     rating: int = Field(ge=1, le=5)
 
+
 class RouteRatingCreate(RouteRatingBase):
     pass
+
 
 class RouteRatingResponse(RouteRatingBase):
     id: int
@@ -178,12 +212,15 @@ class RouteRatingResponse(RouteRatingBase):
     created_at: datetime
     model_config = ConfigDict(from_attributes=True)
 
+
 # --- Ascent Schemas ---
 class AscentBase(BaseModel):
-    ascent_type: str # 'lead', 'top_rope', 'boulder'
+    ascent_type: str  # 'lead', 'top_rope', 'boulder'
+
 
 class AscentCreate(AscentBase):
     pass
+
 
 class AscentResponse(AscentBase):
     id: int
@@ -192,12 +229,14 @@ class AscentResponse(AscentBase):
     date: datetime
     model_config = ConfigDict(from_attributes=True)
 
+
 # --- Combined Responses ---
 class RouteSummaryResponse(RouteResponse):
     zone: Optional[ZoneResponse] = None
     setter: Optional[SetterResponse] = None
     model_config = ConfigDict(from_attributes=True)
-    
+
+
 class RouteDetailResponse(RouteResponse):
     zone: Optional[ZoneResponse] = None
     setter: Optional[SetterResponse] = None
@@ -207,26 +246,32 @@ class RouteDetailResponse(RouteResponse):
     ascents: List[AscentResponse] = []
     model_config = ConfigDict(from_attributes=True)
 
+
 # --- Analytics Schemas ---
 class GradeCount(BaseModel):
     grade: str
     count: int
 
+
 class RouteStatusCount(BaseModel):
     active: int
     archived: int
+
 
 class ZoneCount(BaseModel):
     zone: str
     count: int
 
+
 class DayCount(BaseModel):
     date: str
     count: int
 
+
 class RatingCount(BaseModel):
     rating: int
     count: int
+
 
 class TopRatedRoute(BaseModel):
     route_id: int
@@ -234,6 +279,7 @@ class TopRatedRoute(BaseModel):
     color: str
     avg_rating: float
     rating_count: int
+
 
 class AnalyticsResponse(BaseModel):
     grade_distribution: List[GradeCount]
@@ -244,8 +290,10 @@ class AnalyticsResponse(BaseModel):
     rating_distribution: List[RatingCount]
     top_rated_routes: List[TopRatedRoute]
 
+
 class Token(BaseModel):
     message: str
+
 
 class LoginRequest(BaseModel):
     email: str

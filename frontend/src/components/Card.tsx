@@ -1,16 +1,22 @@
-import React, { type ReactNode } from 'react';
-import './Card.css';
+import React, { type ReactNode } from "react";
+import "./Card.css";
 
 export interface CardProps {
-    children: ReactNode;
-    className?: string;
-    noPadding?: boolean;
+  children: ReactNode;
+  className?: string;
+  noPadding?: boolean;
 }
 
-export const Card: React.FC<CardProps> = ({ children, className = '', noPadding = false }) => {
-    return (
-        <div className={`card glass ${noPadding ? 'card-no-padding' : ''} ${className}`}>
-            {children}
-        </div>
-    );
+export const Card: React.FC<CardProps> = ({
+  children,
+  className = "",
+  noPadding = false,
+}) => {
+  return (
+    <div
+      className={`card glass ${noPadding ? "card-no-padding" : ""} ${className}`}
+    >
+      {children}
+    </div>
+  );
 };

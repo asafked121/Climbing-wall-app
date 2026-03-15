@@ -7,12 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from app import security, models
 import os
 
-# Use a test database
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test_admin.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base.metadata.create_all(bind=engine)
+from app.database import Base, get_db, engine, SessionLocal as TestingSessionLocal
 
 def override_get_db():
     try:
@@ -247,18 +242,18 @@ def test_get_setters_filtering(auth_headers):
     client.post("/admin/setters", json={"name": "Active Amy", "is_active": True}, headers=auth_headers["admin"])
 
     # Test filtering by is_active
-    response = client.get("/admin/setters?is_active=false")
+    response = client.get("/admin/setters?is_active=false", headers=auth_headers["admin"])
     assert response.status_code == 200
     assert any(s["name"] == "Inactive Sam" for s in response.json())
     assert all(s["is_active"] is False for s in response.json())
 
-    response = client.get("/admin/setters?is_active=true")
+    response = client.get("/admin/setters?is_active=true", headers=auth_headers["admin"])
     assert response.status_code == 200
     assert any(s["name"] == "Active Amy" for s in response.json())
     assert all(s["is_active"] is True for s in response.json())
 
     # Test search by name
-    response = client.get("/admin/setters?name=amy")
+    response = client.get("/admin/setters?name=amy", headers=auth_headers["admin"])
     assert response.status_code == 200
     assert len(response.json()) == 1
     assert response.json()[0]["name"] == "Active Amy"

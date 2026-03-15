@@ -99,7 +99,7 @@ struct RouteDetailView: View {
     
     @ViewBuilder
     private func routePhoto(_ detail: RouteDetail) -> some View {
-        if let photoString = detail.photoUrl, let url = URL(string: "http://127.0.0.1:8000\(photoString)") {
+        if let photoString = detail.photoUrl, let url = URL(string: "\(NetworkManager.shared.baseURL.absoluteString)\(photoString)") {
             AsyncImage(url: url) { phase in
                 if let image = phase.image {
                     image
