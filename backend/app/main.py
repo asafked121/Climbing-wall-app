@@ -17,17 +17,26 @@ def initialize_database():
         Base.metadata.create_all(bind=engine)
         return
 
+    import app.models  # ensure models are registered
     inspector = inspect(engine)
+
     # If users table exists but alembic doesn't, stamp it to prevent recreation errors
     if inspector.has_table("users") and not inspector.has_table("alembic_version"):
         print(
             "Existing database detected without Alembic tracking. Stamping as head..."
         )
-        os.system("cd backend && alembic stamp head")
+        os.system("alembic stamp head")
 
-    # Automatically apply any pending migrations
+    # Try to apply pending alembic migrations
     print("Applying pending database migrations...")
-    os.system("cd backend && alembic upgrade head")
+    exit_code = os.system("alembic upgrade head")
+
+    # Fallback: if alembic failed (e.g. fresh deploy, no alembic.ini), create all tables directly
+    if exit_code != 0:
+        print("Alembic migration failed. Falling back to create_all for fresh database...")
+        Base.metadata.create_all(bind=engine)
+        # Try to stamp after create_all so future alembic runs work
+        os.system("alembic stamp head 2>/dev/null")
 
 
 initialize_database()

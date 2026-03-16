@@ -11,6 +11,10 @@ COPY ./app /app/app
 COPY wall /usr/local/bin/wall
 COPY .env /app/.env
 
+# Copy Alembic config and migrations for database setup
+COPY alembic.ini /app/alembic.ini
+COPY migrations /app/migrations
+
 # Set environment variables
 ENV PYTHONPATH=/app
 
