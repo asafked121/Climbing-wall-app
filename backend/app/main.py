@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.database import engine
+from app.database import Base, engine
 from app.routers import auth, admin, climbing_routes, interactions, analytics
 
 import os
@@ -12,9 +12,7 @@ from sqlalchemy import inspect
 
 # Intelligent Database Setup
 def initialize_database():
-    import sys
     if "pytest" in sys.modules:
-        from app.database import Base, engine
         import app.models  # ensure models are registered
         Base.metadata.create_all(bind=engine)
         return
