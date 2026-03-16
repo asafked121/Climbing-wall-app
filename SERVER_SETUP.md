@@ -2,15 +2,14 @@
 
 This guide provides step-by-step instructions on how to install and configure an old laptop as a headless local server to run the Climbing Wall App on your home WiFi network.
 
-## Phase 1: OS Installation
-
+## [Done] Phase 1: OS Installation 
 Since this laptop will be a dedicated server, you do not need a desktop environment (GUI), which saves hundreds of megabytes of RAM.
 
 1. Download **DietPi** for `x86_64 PC / BIOS / UEFI`.
 2. Flash it to a USB drive using a tool like [BalenaEtcher](https://etcher.balena.io/) or [Rufus](https://rufus.ie/).
 3. Boot your old laptop from the USB and follow the install process. Ensure the laptop is plugged into your router via Ethernet for the initial setup, or configure WiFi during install.
 
-## Phase 2: Hostname, Passwords, and Auto-DNS (mDNS)
+## [Done] Phase 2: Hostname, Passwords, and Auto-DNS (mDNS) 
 
 To access your app nicely at `http://climb.local:5173` instead of an IP address, we will set the hostname to `climb` and use Avahi. We will also change the default DietPi passwords.
 
@@ -37,7 +36,7 @@ To access your app nicely at `http://climb.local:5173` instead of an IP address,
    sudo reboot
    ```
 
-## Phase 3: Install Docker and Docker Compose
+## [Done] Phase 3: Install Docker and Docker Compose
 
 DietPi makes this very easy:
 1. SSH back into `climb.local` (or IP address).
