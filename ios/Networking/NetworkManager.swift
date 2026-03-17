@@ -323,6 +323,79 @@ class NetworkManager {
         return try JSONDecoder().decode([Zone].self, from: data)
     }
     
+    func createZone(name: String, description: String?, routeType: String, allowsLead: Bool) async throws -> Zone {
+        let url = baseURL.appendingPathComponent("admin/zones")
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body: [String: Any] = [
+            "name": name,
+            "description": description ?? "",
+            "route_type": routeType,
+            "allows_lead": allowsLead
+        ]
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        
+        let (data, response) = try await session.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+        
+        if httpResponse.statusCode != 201 {
+            if let errorData = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let detail = errorData["detail"] as? String {
+                throw APIError.badRequest(detail)
+            }
+            throw APIError.serverError(httpResponse.statusCode)
+        }
+        
+        return try JSONDecoder().decode(Zone.self, from: data)
+    }
+    
+    func updateZone(zoneId: Int, name: String?, description: String?, routeType: String?, allowsLead: Bool?) async throws -> Zone {
+        let url = baseURL.appendingPathComponent("admin/zones/\(zoneId)")
+        var request = URLRequest(url: url)
+        request.httpMethod = "PATCH"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        var body: [String: Any] = [:]
+        if let name = name { body["name"] = name }
+        if let description = description { body["description"] = description }
+        if let routeType = routeType { body["route_type"] = routeType }
+        if let allowsLead = allowsLead { body["allows_lead"] = allowsLead }
+        
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        
+        let (data, response) = try await session.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+        
+        if httpResponse.statusCode != 200 {
+            if let errorData = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let detail = errorData["detail"] as? String {
+                throw APIError.badRequest(detail)
+            }
+            throw APIError.serverError(httpResponse.statusCode)
+        }
+        
+        return try JSONDecoder().decode(Zone.self, from: data)
+    }
+    
+    func deleteZone(zoneId: Int) async throws {
+        let url = baseURL.appendingPathComponent("admin/zones/\(zoneId)")
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        
+        let (data, response) = try await session.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+        
+        if httpResponse.statusCode != 204 {
+            if let errorData = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let detail = errorData["detail"] as? String {
+                throw APIError.badRequest(detail)
+            }
+            throw APIError.serverError(httpResponse.statusCode)
+        }
+    }
+    
     func fetchColors() async throws -> [RouteColor] {
         let url = baseURL.appendingPathComponent("routes/colors")
         let (data, response) = try await session.data(from: url)

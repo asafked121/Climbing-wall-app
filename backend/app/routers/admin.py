@@ -165,15 +165,64 @@ def delete_user(
 def create_zone(
     zone: schemas.ZoneCreate,
     db: Session = Depends(get_db),
-    current_admin: models.User = Depends(get_current_admin),
+    current_admin: models.User = Depends(get_current_super_admin),
 ):
     db_zone = models.Zone(
-        name=zone.name, description=zone.description, route_type=zone.route_type
+        name=zone.name,
+        description=zone.description,
+        route_type=zone.route_type,
+        allows_lead=zone.allows_lead,
     )
     db.add(db_zone)
     db.commit()
     db.refresh(db_zone)
     return db_zone
+
+
+@router.patch("/zones/{zone_id}", response_model=schemas.ZoneResponse)
+def update_zone(
+    zone_id: int,
+    zone_update: schemas.ZoneUpdate,
+    db: Session = Depends(get_db),
+    current_admin: models.User = Depends(get_current_super_admin),
+):
+    db_zone = db.query(models.Zone).filter(models.Zone.id == zone_id).first()
+    if not db_zone:
+        raise HTTPException(status_code=404, detail="Zone not found")
+
+    update_data = zone_update.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_zone, key, value)
+
+    db.commit()
+    db.refresh(db_zone)
+    return db_zone
+
+
+@router.delete("/zones/{zone_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_zone(
+    zone_id: int,
+    db: Session = Depends(get_db),
+    current_admin: models.User = Depends(get_current_super_admin),
+):
+    db_zone = db.query(models.Zone).filter(models.Zone.id == zone_id).first()
+    if not db_zone:
+        raise HTTPException(status_code=404, detail="Zone not found")
+
+    # Check if any routes are associated with this zone
+    has_routes = (
+        db.query(models.Route).filter(models.Route.zone_id == zone_id).first()
+        is not None
+    )
+    if has_routes:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot delete zone with associated routes. Please delete or move routes first.",
+        )
+
+    db.delete(db_zone)
+    db.commit()
+    return None
 
 
 # --- Color Management ---

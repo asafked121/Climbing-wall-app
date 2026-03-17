@@ -106,31 +106,59 @@ export const AdminDashboard: React.FC = () => {
         </Card>
 
         {user?.role === "super_admin" && (
-          <Card>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <div>
-                <h3 className="section-title" style={{ margin: 0 }}>
-                  Bulk Import Routes
-                </h3>
-                <p
-                  style={{
-                    color: "var(--text-secondary)",
-                    fontSize: "0.9rem",
-                    margin: "4px 0 0 0",
-                  }}
-                >
-                  Upload multiple routes via Excel (.xlsx)
-                </p>
+          <>
+            <Card>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <h3 className="section-title" style={{ margin: 0 }}>
+                    Manage Zones
+                  </h3>
+                  <p
+                    style={{
+                      color: "var(--text-secondary)",
+                      fontSize: "0.9rem",
+                      margin: "4px 0 0 0",
+                    }}
+                  >
+                    Add, delete, or rename wall zones
+                  </p>
+                </div>
+                <Button onClick={() => navigate("/admin/zones")}>Go</Button>
               </div>
-              <Button onClick={() => navigate("/admin/bulk-upload")}>Go</Button>
-            </div>
-          </Card>
+            </Card>
+
+            <Card>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <h3 className="section-title" style={{ margin: 0 }}>
+                    Bulk Import Routes
+                  </h3>
+                  <p
+                    style={{
+                      color: "var(--text-secondary)",
+                      fontSize: "0.9rem",
+                      margin: "4px 0 0 0",
+                    }}
+                  >
+                    Upload multiple routes via Excel (.xlsx)
+                  </p>
+                </div>
+                <Button onClick={() => navigate("/admin/bulk-upload")}>Go</Button>
+              </div>
+            </Card>
+          </>
         )}
       </div>
     </div>

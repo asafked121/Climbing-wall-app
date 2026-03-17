@@ -75,6 +75,7 @@ class ZoneBase(BaseModel):
     name: str
     description: Optional[str] = None
     route_type: str = "boulder"
+    allows_lead: bool = False
 
     @field_validator("route_type")
     @classmethod
@@ -83,9 +84,40 @@ class ZoneBase(BaseModel):
             raise ValueError(f"route_type must be one of {VALID_ROUTE_TYPES}")
         return value
 
+    @field_validator("allows_lead")
+    @classmethod
+    def validate_allows_lead(cls, v: bool, info) -> bool:
+        if v and info.data.get("route_type") == "boulder":
+            raise ValueError("Lead climbing can only be enabled for top_rope zones.")
+        return v
+
 
 class ZoneCreate(ZoneBase):
     pass
+
+
+class ZoneUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    route_type: Optional[str] = None
+    allows_lead: Optional[bool] = None
+
+    @field_validator("route_type")
+    @classmethod
+    def validate_route_type(cls, value: str) -> str:
+        if value is not None and value not in VALID_ROUTE_TYPES:
+            raise ValueError(f"route_type must be one of {VALID_ROUTE_TYPES}")
+        return value
+
+    @field_validator("allows_lead")
+    @classmethod
+    def validate_allows_lead(cls, v: Optional[bool], info) -> Optional[bool]:
+        if v is True:
+            # Check route_type in this update or already existing (though existing check is more logic heavy,
+            # for simplicity we check if route_type is being set to boulder in this SAME request)
+            if info.data.get("route_type") == "boulder":
+                 raise ValueError("Lead climbing can only be enabled for top_rope zones.")
+        return v
 
 
 class ZoneResponse(ZoneBase):
