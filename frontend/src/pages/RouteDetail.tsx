@@ -647,7 +647,7 @@ export const RouteDetail: React.FC = () => {
           <Card>
             <h3 className="section-title">Rate this route</h3>
             <div className="star-rating">
-              {[1, 2, 3, 4, 5].map((star) => (
+              {[5, 4, 3, 2, 1].map((star) => (
                 <span
                   key={star}
                   className={`star ${rating >= star ? "filled" : ""}`}
