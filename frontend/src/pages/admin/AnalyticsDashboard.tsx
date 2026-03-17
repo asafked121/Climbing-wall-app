@@ -233,27 +233,60 @@ export const AnalyticsDashboard: React.FC = () => {
     0,
   );
 
+  /* ---------- Grade sorting helper ---------- */
+
+  const compareGrades = (a: string, b: string) => {
+    // Helper to get numeric value from V-scale or YDS
+    const getVal = (s: string) => {
+      if (s.startsWith("V")) {
+        return parseInt(s.substring(1)) || 0;
+      }
+      if (s.startsWith("5.")) {
+        const parts = s.split(".");
+        const major = parseInt(parts[1]) || 0;
+        const sub = parts[1].match(/[a-d]/)?.[0] || "";
+        const subVal = sub ? sub.charCodeAt(0) - 96 : 0;
+        return major * 10 + subVal;
+      }
+      return 0;
+    };
+
+    const valA = getVal(a);
+    const valB = getVal(b);
+
+    if (valA !== valB) return valA - valB;
+    return a.localeCompare(b);
+  };
+
   /* ---------- Chart data builders ---------- */
 
+  const sortedGradeDist = [...data.grade_distribution].sort((a, b) =>
+    compareGrades(a.grade, b.grade),
+  );
+
   const gradeDistChartData = {
-    labels: data.grade_distribution.map((g) => g.grade),
+    labels: sortedGradeDist.map((g) => g.grade),
     datasets: [
       {
         label: "Active Routes",
-        data: data.grade_distribution.map((g) => g.count),
-        backgroundColor: CHART_COLORS.slice(0, data.grade_distribution.length),
+        data: sortedGradeDist.map((g) => g.count),
+        backgroundColor: CHART_COLORS.slice(0, sortedGradeDist.length),
         borderRadius: 6,
         borderSkipped: false,
       },
     ],
   };
 
+  const sortedAscents = [...data.ascents_by_grade].sort((a, b) =>
+    compareGrades(a.grade, b.grade),
+  );
+
   const ascentsByGradeData = {
-    labels: data.ascents_by_grade.map((g) => g.grade),
+    labels: sortedAscents.map((g) => g.grade),
     datasets: [
       {
         label: "Ascents",
-        data: data.ascents_by_grade.map((g) => g.count),
+        data: sortedAscents.map((g) => g.count),
         backgroundColor: "rgba(139, 92, 246, 0.8)",
         borderRadius: 6,
         borderSkipped: false,
