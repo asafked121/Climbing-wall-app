@@ -53,6 +53,19 @@ def _apply_route_filters(
         query = query.filter(models.Route.set_date <= date_to)
     return query
 
+from app.routers.climbing_routes import BOULDER_GRADES, TOP_ROPE_GRADES
+
+def _sort_grades(rows: list[tuple[str, int]]) -> list[dict]:
+    """Sort grade counts based on predefined order in BOULDER_GRADES and TOP_ROPE_GRADES."""
+    all_known = BOULDER_GRADES + TOP_ROPE_GRADES
+    grade_order = {g: i for i, g in enumerate(all_known)}
+    
+    # Sort by known order, then alphabetically for unknowns
+    sorted_rows = sorted(
+        rows,
+        key=lambda x: (grade_order.get(x[0], 999), x[0])
+    )
+    return [{"grade": grade, "count": count} for grade, count in sorted_rows]
 
 def _build_grade_distribution(db, status, route_type, date_from, date_to) -> list[dict]:
     """Count of routes per intended grade."""
@@ -62,8 +75,7 @@ def _build_grade_distribution(db, status, route_type, date_from, date_to) -> lis
         .group_by(models.Route.intended_grade)
         .all()
     )
-    return [{"grade": grade, "count": count} for grade, count in rows]
-
+    return _sort_grades(rows)
 
 def _build_ascents_by_grade(db, status, route_type, date_from, date_to) -> list[dict]:
     """Total ascents grouped by the route's intended grade."""
@@ -74,7 +86,7 @@ def _build_ascents_by_grade(db, status, route_type, date_from, date_to) -> list[
         .group_by(models.Route.intended_grade)
         .all()
     )
-    return [{"grade": grade, "count": count} for grade, count in rows]
+    return _sort_grades(rows)
 
 
 def _build_route_status(db, route_type, date_from, date_to) -> dict:
