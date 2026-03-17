@@ -31,3 +31,12 @@ def client(session):
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
     app.dependency_overrides.clear()
+@pytest.fixture(scope="function")
+def super_admin_cookies(client, session):
+    client.post("/auth/register", json={"email": "super@test.com", "password": "pass", "role": "admin"})
+    from app import models
+    user = session.query(models.User).filter(models.User.email == "super@test.com").first()
+    user.role = "super_admin"
+    session.commit()
+    res = client.post("/auth/login", json={"email": "super@test.com", "password": "pass"})
+    return {"access_token": res.cookies.get("access_token")}
