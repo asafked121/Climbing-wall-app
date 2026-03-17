@@ -4,10 +4,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from app.database import Base, get_db
-from app.main import app
-
 from app.database import Base, get_db, SessionLocal, engine
+from app.main import app
+from app import models
 
 TestingSessionLocal = SessionLocal
 
@@ -31,3 +30,18 @@ def client(session):
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
     app.dependency_overrides.clear()
+
+@pytest.fixture(scope="function")
+def admin_cookies(client, session):
+    client.post("/auth/register", json={"email": "admin_fixture@test.com", "password": "pass", "role": "admin"})
+    res = client.post("/auth/login", json={"email": "admin_fixture@test.com", "password": "pass"})
+    return {"access_token": res.cookies.get("access_token")}
+
+@pytest.fixture(scope="function")
+def super_admin_cookies(client, session):
+    client.post("/auth/register", json={"email": "super_fixture@test.com", "password": "pass", "role": "admin"})
+    user = session.query(models.User).filter(models.User.email == "super_fixture@test.com").first()
+    user.role = "super_admin"
+    session.commit()
+    res = client.post("/auth/login", json={"email": "super_fixture@test.com", "password": "pass"})
+    return {"access_token": res.cookies.get("access_token")}

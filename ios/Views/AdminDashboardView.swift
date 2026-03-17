@@ -57,6 +57,25 @@ struct AdminDashboardView: View {
                             .foregroundColor(.purple)
                     }
                 }
+                
+                if loginViewModel.currentUser?.role == "super_admin" {
+                    NavigationLink {
+                        ZoneListView()
+                    } label: {
+                        Label {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Manage Zones")
+                                    .font(.body)
+                                Text("Add, delete, or rename wall zones")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        } icon: {
+                            Image(systemName: "map.fill")
+                                .foregroundColor(.green)
+                        }
+                    }
+                }
             }
 
             if loginViewModel.currentUser?.role == "super_admin" {

@@ -5,28 +5,13 @@ from fastapi.testclient import TestClient
 
 from app import security, models
 
-@pytest.fixture
-def super_admin_cookies(client, session):
-    hashed_password = security.get_password_hash("pass")
-    super_admin = models.User(email="super@test.com", username="super_admin", password_hash=hashed_password, role="super_admin", is_banned=False)
-    session.add(super_admin)
-    session.commit()
-    token = security.create_access_token(data={"sub": "super@test.com", "role": "super_admin"})
-    return {"access_token": token}
-
-@pytest.fixture
-def admin_cookies(client, session):
-    hashed_password = security.get_password_hash("pass")
-    admin_user = models.User(email="admin@test.com", username="admin_testing", password_hash=hashed_password, role="admin", is_banned=False)
-    session.add(admin_user)
-    session.commit()
-    token = security.create_access_token(data={"sub": "admin@test.com", "role": "admin"})
-    return {"access_token": token}
+from app import models
 
 @pytest.fixture
 def prepared_db(client, super_admin_cookies):
     # Create Zone
     zone_res = client.post("/admin/zones", json={"name": "Wall A", "description": "Slab", "route_type": "boulder"}, cookies=super_admin_cookies)
+    assert zone_res.status_code == 201
     zone_id = zone_res.json()["id"]
     
     # Create colors

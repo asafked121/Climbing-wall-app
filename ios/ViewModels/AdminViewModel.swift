@@ -7,6 +7,7 @@ class AdminViewModel: ObservableObject {
     @Published var users: [User] = []
     @Published var setters: [Setter] = []
     @Published var colors: [RouteColor] = []
+    @Published var zones: [Zone] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var searchQuery: String = ""
@@ -163,6 +164,57 @@ class AdminViewModel: ObservableObject {
         do {
             try await NetworkManager.shared.deleteColor(colorId: colorId)
             colors.removeAll { $0.id == colorId }
+        } catch {
+            self.errorMessage = error.localizedDescription
+        }
+        isLoading = false
+    }
+    
+    // MARK: - Zones
+    
+    func fetchZones() async {
+        isLoading = true
+        errorMessage = nil
+        do {
+            self.zones = try await NetworkManager.shared.fetchZones()
+        } catch {
+            self.errorMessage = error.localizedDescription
+        }
+        isLoading = false
+    }
+
+    func addZone(name: String, description: String?, routeType: String, allowsLead: Bool) async {
+        isLoading = true
+        errorMessage = nil
+        do {
+            let newZone = try await NetworkManager.shared.createZone(name: name, description: description, routeType: routeType, allowsLead: allowsLead)
+            self.zones.append(newZone)
+        } catch {
+            self.errorMessage = error.localizedDescription
+        }
+        isLoading = false
+    }
+
+    func updateZone(zoneId: Int, name: String?, description: String?, routeType: String?, allowsLead: Bool?) async {
+        isLoading = true
+        errorMessage = nil
+        do {
+            let updatedZone = try await NetworkManager.shared.updateZone(zoneId: zoneId, name: name, description: description, routeType: routeType, allowsLead: allowsLead)
+            if let index = zones.firstIndex(where: { $0.id == updatedZone.id }) {
+                zones[index] = updatedZone
+            }
+        } catch {
+            self.errorMessage = error.localizedDescription
+        }
+        isLoading = false
+    }
+
+    func deleteZone(zoneId: Int) async {
+        isLoading = true
+        errorMessage = nil
+        do {
+            try await NetworkManager.shared.deleteZone(zoneId: zoneId)
+            zones.removeAll { $0.id == zoneId }
         } catch {
             self.errorMessage = error.localizedDescription
         }

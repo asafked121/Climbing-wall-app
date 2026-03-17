@@ -44,9 +44,12 @@ struct Zone: Codable, Identifiable {
     let description: String?
     let routeType: String
     
+    let allowsLead: Bool
+    
     enum CodingKeys: String, CodingKey {
         case id, name, description
         case routeType = "route_type"
+        case allowsLead = "allows_lead"
     }
     
     init(from decoder: Decoder) throws {
@@ -55,6 +58,7 @@ struct Zone: Codable, Identifiable {
         self.name = try container.decode(String.self, forKey: .name)
         self.description = try container.decodeIfPresent(String.self, forKey: .description)
         self.routeType = try container.decodeIfPresent(String.self, forKey: .routeType) ?? "boulder"
+        self.allowsLead = try container.decodeIfPresent(Bool.self, forKey: .allowsLead) ?? false
     }
 }
 

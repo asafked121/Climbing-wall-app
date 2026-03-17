@@ -60,6 +60,7 @@ class Zone(Base):
     route_type = Column(
         String, default="boulder", nullable=False
     )  # 'boulder' or 'top_rope'
+    allows_lead = Column(Boolean, default=False, nullable=False)
 
     routes = relationship("Route", back_populates="zone")
 

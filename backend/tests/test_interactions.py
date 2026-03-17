@@ -1,13 +1,20 @@
 import pytest
 
 @pytest.fixture
-def setup_data(client):
+def setup_data(client, session):
     client.post("/auth/register", json={"email": "admin@test.com", "password": "pass", "role": "admin"})
+    from app import models
+    admin_user = session.query(models.User).filter(models.User.email == "admin@test.com").first()
+    admin_user.role = "super_admin"
+    session.commit()
+
     client.post("/auth/login", json={"email": "admin@test.com", "password": "pass"})
     
     zone_res = client.post("/admin/zones", json={"name": "Cave"})
+    assert zone_res.status_code == 201
     zone_id = zone_res.json()["id"]
     route_res = client.post("/admin/routes", json={"zone_id": zone_id, "color": "red", "intended_grade": "V4"})
+    assert route_res.status_code == 201
     route_id = route_res.json()["id"]
     
     client.post("/auth/logout")
@@ -79,15 +86,23 @@ def test_rating_OutOfBounds_Extraordinary(setup_data):
 def guest_setup(client, session):
     """Creates a route as admin, then registers a user and sets their role to 'guest' directly in the DB."""
     client.post("/auth/register", json={"email": "admin2@test.com", "password": "pass", "role": "admin"})
+    from app import models
+    admin_user = session.query(models.User).filter(models.User.email == "admin2@test.com").first()
+    admin_user.role = "super_admin"
+    session.commit()
+
     client.post("/auth/login", json={"email": "admin2@test.com", "password": "pass"})
 
     zone_res = client.post("/admin/zones", json={"name": "Guest Zone"})
+    assert zone_res.status_code == 201
     zone_id = zone_res.json()["id"]
     route_res = client.post("/admin/routes", json={"zone_id": zone_id, "color": "blue", "intended_grade": "V2"})
+    assert route_res.status_code == 201
     route_id = route_res.json()["id"]
 
     # Log an ascent as admin so we can test delete later
     ascent_res = client.post(f"/routes/{route_id}/ascents", json={"ascent_type": "boulder"})
+    assert ascent_res.status_code == 201
     ascent_id = ascent_res.json()["id"]
 
     client.post("/auth/logout")

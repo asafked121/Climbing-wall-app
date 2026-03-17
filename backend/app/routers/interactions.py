@@ -138,11 +138,10 @@ def submit_ascent(
         raise HTTPException(status_code=404, detail="Zone not found")
 
     # Constraint: Restrict Lead climbing to specific zones
-    LEAD_ALLOWED_ZONES = [4, 7, 9]
-    if ascent.ascent_type == "lead" and db_zone.id not in LEAD_ALLOWED_ZONES:
+    if ascent.ascent_type == "lead" and not db_zone.allows_lead:
         raise HTTPException(
             status_code=400,
-            detail="Lead climbing is only allowed on Rope 1, Rope 4, or Rope 6",
+            detail="Lead climbing is not allowed in this zone",
         )
 
     # Constraint: Cannot log same type twice

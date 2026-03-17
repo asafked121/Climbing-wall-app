@@ -15,6 +15,7 @@ import { AdminSetters } from "./pages/admin/AdminSetters";
 import { AdminColors } from "./pages/admin/AdminColors";
 import { AnalyticsDashboard } from "./pages/admin/AnalyticsDashboard";
 import { BulkUploadRoutes } from "./pages/admin/BulkUploadRoutes";
+import { AdminZones } from "./pages/admin/AdminZones";
 import { TermsOfService } from "./pages/TermsOfService";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -95,6 +96,7 @@ export const App = () => {
             <Route path="/admin/colors" element={<AdminColors />} />
             <Route path="/admin/analytics" element={<AnalyticsDashboard />} />
             <Route path="/admin/bulk-upload" element={<BulkUploadRoutes />} />
+            <Route path="/admin/zones" element={<AdminZones />} />
           </Route>
         </Routes>
       </BrowserRouter>

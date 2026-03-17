@@ -47,7 +47,7 @@ DietPi makes this very easy:
 3. Search for and select **Docker** and **Docker Compose**.
 4. Proceed with the installation.
 
-## Phase 4: Deploying the Application
+## [Done] Phase 4: Deploying the Application
 
 Now we will get your code onto the server and spin it up.
 
@@ -80,7 +80,7 @@ Now we will get your code onto the server and spin it up.
    ```
 5. You can now access your app on any device connected to the home WiFi at: `http://climb.local:5173`. You can log in using the `SUPER_ADMIN_USERNAME` and `SUPER_ADMIN_PASSWORD` you set in the `.env` file!
 
-## Phase 5: Automatic Continuous Deployment (Polling)
+## [Done] Phase 5: Automatic Continuous Deployment (Polling)
 
 To ensure the server pulls new changes from GitHub automatically, we will use a `cron` job that triggers our `update.sh` script every 5 minutes. The script will check if there are any new changes, and only rebuild the server if necessary.
 
