@@ -120,6 +120,8 @@
 
 .star-rating {
   display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
   gap: 0.5rem;
   font-size: 2rem;
   cursor: pointer;
@@ -127,7 +129,7 @@
 
 .star {
   color: var(--border-color);
-  transition: color 0.2s;
+  transition: color 0.2s, transform 0.1s;
 }
 
 .star.filled {
@@ -138,6 +140,7 @@
 .star:hover,
 .star:hover ~ .star {
   color: #fcd34d;
+  transform: scale(1.1);
 }
 
 .vote-group {
