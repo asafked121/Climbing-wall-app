@@ -8,31 +8,11 @@ from app import security, models
 from datetime import datetime, timedelta, timezone
 
 
-from app.database import Base, get_db, engine, SessionLocal as TestingSessionLocal
-
-
-def override_get_db():
-    try:
-        db = TestingSessionLocal()
-        yield db
-    finally:
-        db.close()
-
-
-app.dependency_overrides[get_db] = override_get_db
-client = TestClient(app)
-
-
-@pytest.fixture(autouse=True)
-def setup_db():
-    Base.metadata.create_all(bind=engine)
-    yield
-    Base.metadata.drop_all(bind=engine)
-
+from app import security, models
+from datetime import datetime, timedelta, timezone
 
 @pytest.fixture
-def auth_headers(setup_db):
-    db = TestingSessionLocal()
+def auth_headers(session):
     hashed_password = security.get_password_hash("password")
 
     super_admin = models.User(
@@ -52,8 +32,8 @@ def auth_headers(setup_db):
         password_hash=hashed_password, role="setter", is_banned=False,
     )
 
-    db.add_all([super_admin, admin_user, student, setter_user])
-    db.commit()
+    session.add_all([super_admin, admin_user, student, setter_user])
+    session.commit()
 
     tokens = {
         "super_admin": security.create_access_token(data={"sub": "super@example.com", "role": "super_admin"}),
@@ -61,52 +41,49 @@ def auth_headers(setup_db):
         "student": security.create_access_token(data={"sub": "student@example.com", "role": "student"}),
         "setter": security.create_access_token(data={"sub": "setter@example.com", "role": "setter"}),
     }
-    db.close()
 
     return {role: {"Cookie": f"access_token={token}"} for role, token in tokens.items()}
 
 
 @pytest.fixture
-def seeded_data(setup_db):
+def seeded_data(session):
     """Seed zones, routes, ascents, and ratings for analytics queries."""
-    db = TestingSessionLocal()
     hashed_password = security.get_password_hash("password")
 
     user = models.User(
         email="climber@example.com", username="climber",
         password_hash=hashed_password, role="student", is_banned=False,
     )
-    db.add(user)
-    db.flush()
+    session.add(user)
+    session.flush()
 
     zone_a = models.Zone(name="Zone A", description="Bouldering", route_type="boulder")
     zone_b = models.Zone(name="Zone B", description="Top rope", route_type="top_rope")
-    db.add_all([zone_a, zone_b])
-    db.flush()
+    session.add_all([zone_a, zone_b])
+    session.flush()
 
     route_v3 = models.Route(zone_id=zone_a.id, color="Red", intended_grade="V3", status="active")
     route_v5 = models.Route(zone_id=zone_a.id, color="Blue", intended_grade="V5", status="active")
     route_archived = models.Route(zone_id=zone_b.id, color="Green", intended_grade="5.10a", status="archived")
-    db.add_all([route_v3, route_v5, route_archived])
-    db.flush()
+    session.add_all([route_v3, route_v5, route_archived])
+    session.flush()
 
     # Add ascents — some today, some in the past
     today = datetime.now(timezone.utc)
     yesterday = today - timedelta(days=1)
-    db.add(models.Ascent(user_id=user.id, route_id=route_v3.id, ascent_type="boulder", date=today))
-    db.add(models.Ascent(user_id=user.id, route_id=route_v3.id, ascent_type="boulder", date=yesterday))
-    db.add(models.Ascent(user_id=user.id, route_id=route_v5.id, ascent_type="boulder", date=today))
+    session.add(models.Ascent(user_id=user.id, route_id=route_v3.id, ascent_type="boulder", date=today))
+    session.add(models.Ascent(user_id=user.id, route_id=route_v3.id, ascent_type="boulder", date=yesterday))
+    session.add(models.Ascent(user_id=user.id, route_id=route_v5.id, ascent_type="boulder", date=today))
 
     # Add ratings
-    db.add(models.RouteRating(user_id=user.id, route_id=route_v3.id, rating=4))
+    session.add(models.RouteRating(user_id=user.id, route_id=route_v3.id, rating=4))
 
-    db.commit()
-    db.close()
+    session.commit()
 
 
 # --- Normal Cases ---
 
-def test_getAnalytics_superAdmin_returnsAllMetrics(auth_headers, seeded_data):
+def test_getAnalytics_superAdmin_returnsAllMetrics(client, auth_headers, seeded_data):
     """Super admin gets analytics with seeded data — all fields present and correctly shaped."""
     response = client.get("/admin/analytics", headers=auth_headers["super_admin"])
     assert response.status_code == 200
@@ -121,7 +98,7 @@ def test_getAnalytics_superAdmin_returnsAllMetrics(auth_headers, seeded_data):
     assert "top_rated_routes" in data
 
 
-def test_getAnalytics_gradeDistribution_countsActiveRoutes(auth_headers, seeded_data):
+def test_getAnalytics_gradeDistribution_countsActiveRoutes(client, auth_headers, seeded_data):
     """Grade distribution should only count active routes."""
     response = client.get("/admin/analytics?status=active", headers=auth_headers["super_admin"])
     data = response.json()
@@ -133,7 +110,7 @@ def test_getAnalytics_gradeDistribution_countsActiveRoutes(auth_headers, seeded_
     assert "5.10a" not in grades
 
 
-def test_getAnalytics_routeStatus_correctBreakdown(auth_headers, seeded_data):
+def test_getAnalytics_routeStatus_correctBreakdown(client, auth_headers, seeded_data):
     """Route status should correctly split active and archived."""
     response = client.get("/admin/analytics", headers=auth_headers["super_admin"])
     data = response.json()
@@ -142,7 +119,7 @@ def test_getAnalytics_routeStatus_correctBreakdown(auth_headers, seeded_data):
     assert data["route_status"]["archived"] == 1
 
 
-def test_getAnalytics_ascentsByGrade_groupsCorrectly(auth_headers, seeded_data):
+def test_getAnalytics_ascentsByGrade_groupsCorrectly(client, auth_headers, seeded_data):
     """Ascents by grade should total ascents per route grade."""
     response = client.get("/admin/analytics", headers=auth_headers["super_admin"])
     data = response.json()
@@ -152,7 +129,7 @@ def test_getAnalytics_ascentsByGrade_groupsCorrectly(auth_headers, seeded_data):
     assert ascents.get("V5") == 1  # 1 ascent on V5 route
 
 
-def test_getAnalytics_activityTrend_has30Days(auth_headers, seeded_data):
+def test_getAnalytics_activityTrend_has30Days(client, auth_headers, seeded_data):
     """Activity trend should always return exactly 30 data points."""
     response = client.get("/admin/analytics", headers=auth_headers["super_admin"])
     data = response.json()
@@ -164,7 +141,7 @@ def test_getAnalytics_activityTrend_has30Days(auth_headers, seeded_data):
         assert "count" in point
 
 
-def test_getAnalytics_ratingDistribution_allFiveStars(auth_headers, seeded_data):
+def test_getAnalytics_ratingDistribution_allFiveStars(client, auth_headers, seeded_data):
     """Rating distribution should return entries for all 5 ratings (1-5)."""
     response = client.get("/admin/analytics", headers=auth_headers["super_admin"])
     data = response.json()
@@ -176,7 +153,7 @@ def test_getAnalytics_ratingDistribution_allFiveStars(auth_headers, seeded_data)
     assert ratings.get(5) == 0
 
 
-def test_getAnalytics_topRatedRoutes_orderAndFields(auth_headers, seeded_data):
+def test_getAnalytics_topRatedRoutes_orderAndFields(client, auth_headers, seeded_data):
     """Top rated routes should include route_id, grade, color, avg_rating, rating_count."""
     response = client.get("/admin/analytics", headers=auth_headers["super_admin"])
     data = response.json()
@@ -193,7 +170,7 @@ def test_getAnalytics_topRatedRoutes_orderAndFields(auth_headers, seeded_data):
 
 # --- Edge Cases ---
 
-def test_getAnalytics_emptyDatabase_returnsZeros(auth_headers):
+def test_getAnalytics_emptyDatabase_returnsZeros(client, auth_headers):
     """With no routes/ascents/ratings, analytics should return empty/zero — no 500 errors."""
     response = client.get("/admin/analytics", headers=auth_headers["super_admin"])
     assert response.status_code == 200
@@ -213,25 +190,25 @@ def test_getAnalytics_emptyDatabase_returnsZeros(auth_headers):
 
 # --- Extraordinary Cases (Sad Path) ---
 
-def test_getAnalytics_studentRole_returns403(auth_headers):
+def test_getAnalytics_studentRole_returns403(client, auth_headers):
     """Student role should be denied access."""
     response = client.get("/admin/analytics", headers=auth_headers["student"])
     assert response.status_code == 403
 
 
-def test_getAnalytics_adminRole_returns403(auth_headers):
+def test_getAnalytics_adminRole_returns403(client, auth_headers):
     """Regular admin role should be denied access — super admin only."""
     response = client.get("/admin/analytics", headers=auth_headers["admin"])
     assert response.status_code == 403
 
 
-def test_getAnalytics_setterRole_returns403(auth_headers):
+def test_getAnalytics_setterRole_returns403(client, auth_headers):
     """Setter role should be denied access."""
     response = client.get("/admin/analytics", headers=auth_headers["setter"])
     assert response.status_code == 403
 
 
-def test_getAnalytics_unauthenticated_returns401():
+def test_getAnalytics_unauthenticated_returns401(client):
     """Unauthenticated request should get 401."""
     response = client.get("/admin/analytics")
     assert response.status_code == 401
